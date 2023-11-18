@@ -1,39 +1,26 @@
 <template>
-  <div v-if="loggedIn">
-    <button @click="logout">Logout</button>
-    <h2>Name: {{ user.name }}</h2>
-    <h2>Email: {{ user.email }}</h2>
-    <img :src="user.picture" />
-  </div>
-  <div v-else>
-    <GoogleLogin :callback="callback" prompt />
-  </div>
+  <img alt="Vue logo" src="./assets/logo.png" />
+  <HelloWorld msg="Welcome to Your Vue.js App" />
 </template>
 
 <script>
-import { decodeCredential, googleLogout } from 'vue3-google-login'
+import HelloWorld from "./components/HelloWorld.vue";
+
 export default {
-  data() {
-    return {
-      loggedIn: false,
-      user: null,
-
-      callback: (response) => {
-        console.log("logged in")
-        this.loggedIn = true
-        console.log(response)
-        this.user = decodeCredential(response.credential)
-
-      },
-    }
+  name: "App",
+  components: {
+    HelloWorld,
   },
-  methods: {
-    logout() {
-      googleLogout()
-      this.loggedIn = false
-      this.user = null
-    },
-  },
-}
+};
 </script>
 
+<style>
+#app {
+  font-family: Avenir, Helvetica, Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-align: center;
+  color: #2c3e50;
+  margin-top: 60px;
+}
+</style>
