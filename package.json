@@ -1,0 +1,8 @@
+{
+  "dependencies": {
+    "axios": "^1.6.2",
+    "querystring-es3": "^0.2.1",
+    "vue-router": "^4.2.5",
+    "vue-youtube-embed": "^2.2.2"
+  }
+}
