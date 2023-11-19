@@ -25,7 +25,7 @@
               <input type="checkbox" class="float-left" id="rememberMe">
               <label for="rememberMe float-left">Remember me</label>
             </div>
-            <a href="#" class="float-right col-sm-5" style="text-align:right; padding-right:10px">Forgot password?</a>
+            <a href="#" @click="login" class="float-right col-sm-5" style="text-align:right; padding-right:10px">Forgot password?</a>
           </div>
         </div>
 

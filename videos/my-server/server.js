@@ -16,4 +16,12 @@ app.post('/login', async (req, res) => {
   }
 });
 
+app.post('/submit-personal-details', (req, res) => {
+// Handle personal details submission
+});
+  
+app.post('/submit-social-profiles', (req, res) => {
+// Handle social profiles submission
+});
+
 app.listen(8080, () => console.log('Server running on http://localhost:8080/auth/callback'));
