@@ -44,7 +44,7 @@
        </div>
         
         <!-- Sign Up Link -->
-        <p class="text-center" style="padding-top:10px">No account? <a href="#">Sign up</a></p>
+        <p class="text-center" style="padding-top:10px">No account? <a href="#" @click="login">Sign up</a></p>
       </div>
 
       </div>
