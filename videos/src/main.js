@@ -23,13 +23,11 @@ const router = createRouter({
 const app = createApp(App);
 app.use(router);
 // app.use(VueYoutubeEmbed);
-
-const CLIENT_ID = '785497567658-16251n3ml1bu0mp440s4krbsi25obke7.apps.googleusercontent.com'
-createApp(UserLogin)
-  .use(vue3GoogleLogin, {
-    clientId: CLIENT_ID,
-    //scope: 'profile email',
-    //prompt: 'select_account'
-  })
-
+app.use(vue3GoogleLogin, {
+  clientId: '785497567658-16251n3ml1bu0mp440s4krbsi25obke7.apps.googleusercontent.com',
+  // You can add scope and prompt if needed
+  //scope: 'profile email',
+  //prompt: 'select_account'
+});
 app.mount("#app");
+

@@ -8,6 +8,11 @@
 <script>
 export default {
   name: "App",
+  data() {
+    return {
+      isHomePage: false // set the initial value as per your logic
+    };
+  }
 };
 </script>
 

@@ -91,8 +91,7 @@ export default {
       googleSdkLoaded(google => {
         google.accounts.oauth2
           .initCodeClient({
-            client_id:
-              "785497567658-16251n3ml1bu0mp440s4krbsi25obke7.apps.googleusercontent.com",
+            client_id: "785497567658-16251n3ml1bu0mp440s4krbsi25obke7.apps.googleusercontent.com",
             scope: "email profile openid",
             redirect_uri: "http://localhost:8080/auth/callback",
             callback: response => {
@@ -106,17 +105,14 @@ export default {
     },
     async sendCodeToBackend(code) {
       try {
-        this.$router.push('/video_HomePage');
-        const headers = {
-          Authorization: code
-        };
-        const response = await axios.post("http://localhost:8080/auth/callback", null, { headers });
-        const userDetails = response.data;
-        console.log("User Details:", userDetails);
-        this.userDetails = userDetails;
-
-        // Redirect to the homepage ("/")
         //this.$router.push('/video_HomePage');
+        const response = await axios.post("http://localhost:8080/auth/callback", { code });
+        this.userDetails = response.data;
+        //const userDetails = response.data;
+        //console.log("User Details:", userDetails);
+        //this.userDetails = userDetails;
+
+        this.$router.push('/video_HomePage');
       } catch (error) {
         console.error("Failed to send authorization code:", error);
       }
