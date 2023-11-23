@@ -105,14 +105,14 @@ export default {
     },
     async sendCodeToBackend(code) {
       try {
-        //this.$router.push('/video_HomePage');
+        this.$router.push('/video_HomePage');
         const response = await axios.post("http://localhost:8080/auth/callback", { code });
         this.userDetails = response.data;
         //const userDetails = response.data;
         //console.log("User Details:", userDetails);
         //this.userDetails = userDetails;
 
-        this.$router.push('/video_HomePage');
+        //this.$router.push('/video_HomePage');
       } catch (error) {
         console.error("Failed to send authorization code:", error);
       }
