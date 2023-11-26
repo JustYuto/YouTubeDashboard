@@ -34,6 +34,7 @@
           <button @click="manualLogin" class="btn btn-primary col-sm-5 float-left">Login</button>
           <br>
         <button @click="login" class="btn btn-secondary col-sm-5 float-right">Login Using Google
+          <!--from back end-->
           <div v-if="userDetails">
             <h2>User Details</h2>
             <p>Name: {{ userDetails.name }}</p>
@@ -56,13 +57,13 @@ import { googleSdkLoaded } from "vue3-google-login";
 import axios from "axios";
 //import vue3GoogleLogin from 'vue3-google-login';
 
-export default {
-  data() {
+export default {//Exports the Vue component definition.
+  data() {//Returns the component's reactive data properties.
     return {
       email: '',
       password: '',
       userDetails: null,
-      validationMessage: ''
+      //validationMessage: ''
     };
   },
   methods: {
@@ -88,11 +89,11 @@ export default {
       });
     },
     login() {
-      googleSdkLoaded(google => {
+      googleSdkLoaded(google => {//A function ensures the Google SDK is loaded before executing the login logic.
         google.accounts.oauth2
           .initCodeClient({
             client_id: "785497567658-16251n3ml1bu0mp440s4krbsi25obke7.apps.googleusercontent.com",
-            scope: "email profile openid",
+            scope: "email profile openid https://www.googleapis.com/auth/youtube https://www.googleapis.com/auth/youtube.readonly",
             redirect_uri: "http://localhost:8080/auth/callback",
             callback: response => {
               if (response.code) {
@@ -100,19 +101,22 @@ export default {
               }
             }
           })
-          .requestCode();
+          .requestCode();//Google authentication and consent screens are displayed.
       });
     },
     async sendCodeToBackend(code) {
       try {
-        this.$router.push('/video_HomePage');
-        const response = await axios.post("http://localhost:8080/auth/callback", { code });
-        this.userDetails = response.data;
-        //const userDetails = response.data;
-        //console.log("User Details:", userDetails);
-        //this.userDetails = userDetails;
-
+        const headers = {
+          Authorization: code
+        };
         //this.$router.push('/video_HomePage');
+        const response = await axios.post("http://localhost:8080/auth/callback", null, { headers });
+        //this.userDetails = response.data;
+        const userDetails = response.data;
+        console.log("User Details:", userDetails);
+        this.userDetails = userDetails;
+
+        this.$router.push('/video_HomePage');
       } catch (error) {
         console.error("Failed to send authorization code:", error);
       }
