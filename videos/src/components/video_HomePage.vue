@@ -151,28 +151,40 @@ export default {
   methods: {
     async getYouTubeVideos() {
       try {
-        const response = await axios.get(
-          `https://www.googleapis.com/youtube/v3/search?part=snippet&channelId=UCEJinLT1rDhzY3QXztGqcBA&maxResults=5&order=date&type=video&key=AIzaSyBuR7Xkx_wvsvEiFbwaj4eklNWGE0ih7XU`
-        );
-
-        console.log("YouTube API Response:", response.data);
-
-        this.videos = response.data.items;
+        const response = await axios.get("/api/videos");
+        this.videos = response.data;
       } catch (error) {
-        console.error("Error fetching YouTube videos:", error);
+        console.error("Error fetching videos:", error);
       }
     },
+
     async searchVideos() {
+      const accessToken = localStorage.getItem("youtube_access_token");
+      if (!accessToken) {
+        console.error("Access token is not available.");
+        return;
+      }
+
       try {
         const response = await axios.get(
-          `https://www.googleapis.com/youtube/v3/search?part=snippet&channelId=UCEJinLT1rDhzY3QXztGqcBA&maxResults=5&order=date&type=video&q=${this.searchKeyword}&key=AIzaSyBuR7Xkx_wvsvEiFbwaj4eklNWGE0ih7XU`
+          `https://www.googleapis.com/youtube/v3/search`,
+          {
+            headers: {
+              Authorization: `Bearer ${accessToken}`,
+            },
+            params: {
+              part: "snippet",
+              q: this.searchKeyword,
+              maxResults: 5,
+              type: "video",
+            },
+          }
         );
 
         console.log("YouTube API Response:", response.data);
-
         this.videos = response.data.items;
       } catch (error) {
-        console.error("Error fetching YouTube videos:", error);
+        console.error("Error searching YouTube videos:", error);
       }
     },
   },
