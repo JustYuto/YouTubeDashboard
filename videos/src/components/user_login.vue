@@ -61,6 +61,7 @@
 
         <!-- Login and Google Login Buttons -->
         <div class="row">
+<<<<<<< HEAD
           <button
             @click="manualLogin"
             class="btn btn-primary col-sm-5 float-left"
@@ -77,6 +78,11 @@
             v-on:googleLoginFailure="onGoogleAuthFail"
           >
           </vue3-google-login>
+=======
+          <button @click="manualLogin" class="btn btn-primary col-sm-5 float-left">Login</button>
+          <br>
+        <button @click="login" class="btn btn-secondary col-sm-5 float-right">Login Using Google
+>>>>>>> 01ce711660cdb39df5aea81a57578298e365c270
           <!--from back end-->
           <div v-if="userDetails">
             <h2>User Details</h2>
@@ -103,15 +109,23 @@ import { googleSdkLoaded } from "vue3-google-login";
 import axios from "axios";
 //import vue3GoogleLogin from 'vue3-google-login';
 
+<<<<<<< HEAD
 export default {
   //Exports the Vue component definition.
   data() {
     //Returns the component's reactive data properties.
+=======
+export default {//Exports the Vue component definition.
+  data() {//Returns the component's reactive data properties.
+>>>>>>> 01ce711660cdb39df5aea81a57578298e365c270
     return {
       email: "",
       password: "",
       userDetails: null,
+<<<<<<< HEAD
       videos: [],
+=======
+>>>>>>> 01ce711660cdb39df5aea81a57578298e365c270
       //validationMessage: ''
     };
   },
@@ -161,6 +175,7 @@ export default {
         });
     },
     login() {
+<<<<<<< HEAD
       console.log("Login has started!");
       googleSdkLoaded((google) => {
         //A function ensures the Google SDK is loaded before executing the login logic.
@@ -172,18 +187,32 @@ export default {
               "email profile openid https://www.googleapis.com/auth/youtube https://www.googleapis.com/auth/youtube",
             redirect_uri: "http://localhost:3000/auth/callback",
             callback: (response) => {
+=======
+      googleSdkLoaded(google => {//A function ensures the Google SDK is loaded before executing the login logic.
+        google.accounts.oauth2
+          .initCodeClient({
+            client_id: "785497567658-16251n3ml1bu0mp440s4krbsi25obke7.apps.googleusercontent.com",
+            scope: "email profile openid https://www.googleapis.com/auth/youtube https://www.googleapis.com/auth/youtube.readonly",
+            redirect_uri: "http://localhost:8080/auth/callback",
+            callback: response => {
+>>>>>>> 01ce711660cdb39df5aea81a57578298e365c270
               if (response.code) {
                 console.log(response);
                 this.sendCodeToBackend(response.code);
               }
             },
           })
+<<<<<<< HEAD
           .requestCode(); //Google authentication and consent screens are displayed.
+=======
+          .requestCode();//Google authentication and consent screens are displayed.
+>>>>>>> 01ce711660cdb39df5aea81a57578298e365c270
       });
     },
     async sendCodeToBackend(code) {
       try {
         const headers = {
+<<<<<<< HEAD
           Authorization: code,
         };
         console.log("Runnning sendCodeToBackend");
@@ -209,6 +238,18 @@ export default {
         }
 
         this.$router.push("/video_HomePage");
+=======
+          Authorization: code
+        };
+        //this.$router.push('/video_HomePage');
+        const response = await axios.post("http://localhost:8080/auth/callback", null, { headers });
+        //this.userDetails = response.data;
+        const userDetails = response.data;
+        console.log("User Details:", userDetails);
+        this.userDetails = userDetails;
+
+        this.$router.push('/video_HomePage');
+>>>>>>> 01ce711660cdb39df5aea81a57578298e365c270
       } catch (error) {
         console.error("Failed to send authorization code:", error);
       }
