@@ -28,7 +28,7 @@
               <i class="bx bx-user nav_icon"></i>
               <span class="nav_name">Videos</span>
             </a>
-            <a href="#" class="nav_link">
+            <a href="#" @click.prevent="goToFinancePage" class="nav_link">
               <i class="bx bx-message-square-detail nav_icon"></i>
               <span class="nav_name">Finances</span>
             </a>
@@ -174,6 +174,9 @@ export default {
       } catch (error) {
         console.error("Error fetching YouTube videos:", error);
       }
+    },
+    goToFinancePage() {
+    this.$router.push({ name: 'finance-info' });
     },
   },
   // const apiKey = "AIzaSyBuR7Xkx_wvsvEiFbwaj4eklNWGE0ih7XU";
