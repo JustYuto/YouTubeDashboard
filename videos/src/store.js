@@ -1,14 +1,11 @@
-import Vue from "vue";
-import Vuex from "vuex";
-import createPersistedState from "vuex-persistedstate";
+import { createStore } from 'vuex';
+import createPersistedState from 'vuex-persistedstate';
 
-Vue.use(Vuex);
-
-export default new Vuex.Store({
+export default createStore({
   plugins: [
     createPersistedState({
-      key: "vue-gauth",
-      paths: ["userInfo"],
+      key: 'vue-gauth',
+      paths: ['userInfo'],
       storage: window.sessionStorage,
     }),
   ],
@@ -16,7 +13,7 @@ export default new Vuex.Store({
     userInfo: {},
   },
   mutations: {
-    setUserInfo: function (state, userInfo) {
+    setUserInfo(state, userInfo) {
       state.userInfo = userInfo;
     },
   },

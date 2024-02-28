@@ -24,6 +24,8 @@
     "vue-router": "^4.2.5",
     "vue-youtube-embed": "^2.2.2",
     "vue3-google-login": "^2.0.25",
+    "vuex": "^4.1.0",
+    "vuex-persistedstate": "^4.1.0",
     "youtube-api-v3-search": "^1.2.1"
   },
   "devDependencies": {

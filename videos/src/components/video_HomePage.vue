@@ -90,104 +90,85 @@
     </nav>
   </div>
 
-  <div id="fh5co-footer" role="contentinfo">
-    <div class="container">
-      <div class="row">
-        <div
-          v-for="(video, index) in videos"
-          :key="index"
-          class="col-md-4 to-animate"
-        >
-          <router-link
-            :to="{
-              name: 'fix-video',
-              params: { videoId: video.id.videoId },
-              query: {
-                title: video.snippet.title,
-                tags: video.tags,
-                description: video.snippet.description,
-                thumbnail: video.snippet.thumbnails.default.url,
-                channelTitle: video.snippet.channelTitle,
-                channelId: video.snippet.channelId,
-              },
-            }"
-          >
-            <img
-              :src="video.snippet.thumbnails.default.url"
-              alt="Thumbnail"
-              style="height: 250px; cursor: pointer"
-            />
-          </router-link>
-          <h3 class="section-title">{{ video.snippet.title }}</h3>
-          <p>{{ video.snippet.channelTitle }}</p>
-          <p>0 views・15 Nov 2023</p>
-          <!-- <p>{{ video.statistics }} views・{{ video.snippet.publishedAt }}</p> -->
+  <div class="container py-5">
+    <div class="row">
+      <div class="col-md-12 text-center mb-5">
+        <h2>Videos</h2>
+      </div>
+    </div>
+    <div class="row">
+      <div
+        class="col-lg-4 col-md-6 mb-4"
+        v-for="(video, index) in videos"
+        :key="index"
+      >
+        <div class="card">
+          <img
+            :src="video.snippet.thumbnails.high.url"
+            class="card-img-top"
+            alt="Video thumbnail"
+          />
+          <div class="card-body">
+            <h5 class="card-title">{{ video.snippet.title }}</h5>
+            <p class="card-text">{{ video.snippet.description }}</p>
+          </div>
+          <div class="card-footer">
+            <small class="text-muted">323K Views - 23 Oct 2022</small>
+          </div>
         </div>
-
-        <!-- <div class="col-md-4 to-animate">
-          <p class="video-list"></p>
-          <h3 class="section-title">The New iPad is Weird!</h3>
-          <p>Marques Brownlee</p>
-          <p>323K views・23 Oct 2022</p>
-        </div> -->
       </div>
     </div>
   </div>
 </template>
 
 <script>
-import axios from "axios";
+// import axios from "axios";
+import { mapState } from "vuex";
 
 export default {
   name: "VideoHomePage",
-  data() {
-    return {
-      videos: [], // Array to store fetched videos
-    };
+  // mounted() {
+  //   this.fetchVideos();
+  // },
+  computed: {
+    ...mapState(["videos"]),
   },
   mounted() {
-    this.getYouTubeVideos();
+    console.log("取得した動画情報:", this.videos);
   },
   methods: {
-    async getYouTubeVideos() {
-      try {
-        const response = await axios.get("/api/videos");
-        this.videos = response.data;
-      } catch (error) {
-        console.error("Error fetching videos:", error);
-      }
-    },
-
-    async searchVideos() {
-      const accessToken = localStorage.getItem("youtube_access_token");
-      if (!accessToken) {
-        console.error("Access token is not available.");
-        return;
-      }
-
-      try {
-        const response = await axios.get(
-          `https://www.googleapis.com/youtube/v3/search`,
-          {
-            headers: {
-              Authorization: `Bearer ${accessToken}`,
-            },
-            params: {
-              part: "snippet",
-              q: this.searchKeyword,
-              maxResults: 5,
-              type: "video",
-            },
-          }
-        );
-
-        console.log("YouTube API Response:", response.data);
-        this.videos = response.data.items;
-      } catch (error) {
-        console.error("Error searching YouTube videos:", error);
-      }
-    },
+    // fetchVideos() {
+    //   this.$store.dispatch("fetchVideos");
+    // },
+    // async searchVideos() {
+    //   const accessToken = localStorage.getItem("youtube_access_token");
+    //   if (!accessToken) {
+    //     console.error("Access token is not available.");
+    //     return;
+    //   }
+    //   try {
+    //     const response = await axios.get(
+    //       `https://www.googleapis.com/youtube/v3/search`,
+    //       {
+    //         headers: {
+    //           Authorization: `Bearer ${accessToken}`,
+    //         },
+    //         params: {
+    //           part: "snippet",
+    //           q: this.searchKeyword,
+    //           maxResults: 5,
+    //           type: "video",
+    //         },
+    //       }
+    //     );
+    //     console.log("YouTube API Response:", response.data);
+    //     this.videos = response.data.items;
+    //   } catch (error) {
+    //     console.error("Error searching YouTube videos:", error);
+    //   }
+    // },
   },
+
   // const apiKey = "AIzaSyBuR7Xkx_wvsvEiFbwaj4eklNWGE0ih7XU";
 };
 </script>
