@@ -63,10 +63,17 @@
       <!-- Multiselect Column -->
       <div class="col-md-6">
         <div class="multiselect-col">
-          <label v-for="(channel, index) in channels" :key="index" class="channel-checkbox">
-            <input type="checkbox" :value="channel" v-model="selectedChannels">
-            {{ channel.name }}
-          </label>
+          <div v-for="(channel, index) in channels" :key="index" class="mb-2 d-flex align-items-center">
+            <input 
+              type="checkbox" 
+              :value="channel" 
+              v-model="selectedChannels" 
+              :id="`channel-${index}`"
+              class="me-1"
+            >
+            <img :src="channel.profilePic" alt="" class="profile-pic me-1" style="width: 25px; height: 25px; border-radius: 50%;">
+            <label :for="`channel-${index}`" :title="`Subscribers: ${channel.subscribers}`">{{ channel.name }}</label>
+          </div>
         </div>
       </div>
     </div>
@@ -81,13 +88,17 @@
         <p>Percentage increase: {{ percentageIncrease }}%</p>
       </div>
       <!-- History Column -->
-      <div class="col-md-6">
+      <div class="col-md-6 history-list">
         <h2>History</h2>
-        <ul>
-          <li v-for="(item, index) in history" :key="index">
-            {{ item.date }} - {{ item.name }} - {{ item.amount > 0 ? '+' : '' }}${{ item.amount }}
-          </li>
-        </ul>
+        <div v-for="(item, index) in history" :key="index" class="history-item">
+          <div class="history-content">
+            <span>{{ item.date }}</span>
+            <span>{{ item.name }}</span>
+            <span :class="{'text-positive': item.amount > 0, 'text-negative': item.amount < 0}">
+              {{ item.amount > 0 ? '+' : '' }}${{ item.amount }}
+            </span>
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -102,13 +113,23 @@ export default {
     return {
       selectedChannels: [],
       channels: [
-        { name: 'Marques Brownlee', subscribers: '6M' },
+        { name: 'Marques Brownlee', subscribers: '6M', profilePic: '/assets/Marques Brownlee.jpg' },
+        { name: 'Mr Beast - Jimmy', subscribers: '16M', profilePic: '/assets/Mr Beast.jpg'},
+        { name: 'Ms Yeah 办公室小野', subscribers: '63M', profilePic: '/assets/Ms Yeah.jpg' },
+        { name: "Whindersson Nunes", subscribers: "1M",profilePic: '/assets/Whindersson Nunes.jpeg' },
+        { name: "HolaSoyGerman", subscribers: "2M",profilePic: '/assets/HolaSoyGerman.jpg' },
+        { name: "Liza Koshy", subscribers: "3M",profilePic: '/assets/Liza Koshy.jpg' }
         // Add other channels here
       ],
       totalEarnings: 2000,
       percentageIncrease: 5,
       history: [
         { name: 'Video A', date: '2022-01-01', amount: 200 },
+        { name: 'Video B', date: '2022-01-02', amount: 300 },
+        { name: 'Video C', date: '2022-01-01', amount: 500 },
+        { name: 'Video D', date: '2022-01-03', amount: 700 },
+        { name: 'Video E', date: '2022-01-01', amount: 100 },
+        { name: 'Video F', date: '2022-01-04', amount: 900 }
         // Add other history items here
       ],
       earningsData: {
@@ -130,10 +151,32 @@ export default {
           datasets: [
             {
               label: 'Earnings',
-              data: [0, 10, 5, 2, 20, 30, 45],
-              // Add other dataset properties here
+              data: [0, 10, 5, 15, 23, 21, 28],
+              borderColor: 'rgba(75,192,192,1)', // color of the line
+              backgroundColor: 'rgba(75,192,192,1)', // fill color under the line
+              borderWidth: 2 // thickness of the line
+            },
+            {
+              label: 'Earnings',
+              data: [10, 20, 13, 18, 27, 29, 26],
+              borderColor: 'rgba(255,0,127,1)', // color of the line
+              backgroundColor: 'rgba(255,0,127,1)', // fill color under the line
+              borderWidth: 2 // thickness of the line
+            },            
+            {
+              label: 'Earnings',
+              data: [25, 18, 15, 25, 23, 31, 29],
+              borderColor: 'rgba(0,255,127,1)', // color of the line
+              backgroundColor: 'rgba(75,192,192,1)', // fill color under the line
+              borderWidth: 2 // thickness of the line
+            },
+            {
+              label: 'Earnings',
+              data: [13, 10, 25, 15, 27, 28, 32],
+              borderColor: 'rgba(255,255,0,1)', // color of the line
+              backgroundColor: 'rgba(255,255,0,1)', // fill color under the line
+              borderWidth: 2 // thickness of the line
             }
-            // Add other datasets here
           ]
         }
       });
@@ -143,12 +186,35 @@ export default {
       new Chart(ctx, {
         type: 'line',
         data: {
-          labels: ['Week 1', 'Week 2', 'Week 3', 'Week 4'],
+          labels: ['Week 1', 'Week 2', 'Week 3', 'Week 4', 'Week 5', 'Week 6'],
           datasets: [
             {
               label: 'Monthly Earnings',
-              data: [500, 600, 700, 2000],
-              // Add other dataset properties here
+              data: [500, 700, 1200, 1500, 1300, 1800],
+              borderColor: 'rgba(75,192,192,1)', // color of the line
+              backgroundColor: 'rgba(75,192,192,1)', // fill color under the line
+              borderWidth: 2 // thickness of the line
+            },
+            {
+              label: 'Monthly Earnings',
+              data: [1300, 900, 1500, 1700, 900, 1200],
+              borderColor: 'rgba(255,0,127,1)', // color of the line
+              backgroundColor: 'rgba(255,0,127,1)', // fill color under the line
+              borderWidth: 2 // thickness of the line
+            },
+            {
+              label: 'Monthly Earnings',
+              data: [1500, 900, 1200, 1700, 1300, 1600],
+              borderColor: 'rgba(0,255,127,1)', // color of the line
+              backgroundColor: 'rgba(0,255,127,1)', // fill color under the line
+              borderWidth: 2 // thickness of the line
+            },
+            {
+              label: 'Monthly Earnings',
+              data: [800, 1700, 2100, 1900, 2500, 2200],
+              borderColor: 'rgba(255,255,0,1)', // color of the line
+              backgroundColor: 'rgba(255,255,0,1)', // fill color under the line
+              borderWidth: 2 // thickness of the line
             }
           ]
         }
@@ -160,7 +226,8 @@ export default {
 
 <style>
   #main-container {
-    padding-left: 250px; /* Adjust this value based on the width of your sidebar */
+    padding-top: 50px; /* Adjust this value based on the height of your navbar */
+    padding-left: 350px; /* Adjust this value based on the width of your sidebar */
   }
 
   /* Example media query for smaller screens */
@@ -169,5 +236,46 @@ export default {
       padding-left: 100px; /* Smaller padding for smaller screens if the sidebar is also smaller */
     }
   }
+  .multiselect-col div {
+    display: block;
+  }
+
+  .multiselect-col input[type="checkbox"] {
+    vertical-align: middle;
+    margin-right: 0.5rem; /* Adjust spacing between checkbox and label as needed */
+  }
+
+  .multiselect-col label {
+    vertical-align: middle;
+  }
+  .history-list {
+  padding: 0;
+  }
+
+  .history-item + .history-item {
+    border-top: 1px solid #444; /* Or any color that suits your design */
+  }
+
+  .history-content {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px 0;
+  }
+
+  .text-positive {
+    color: green;
+  }
+
+  .text-negative {
+    color: red;
+  }
+
+  .profile-pic {
+    border-radius: 50%;
+    width: 30px; /* Adjust as needed */
+    height: 30px; /* Adjust as needed */
+    object-fit: cover;
+  }
+
 </style>
 <style src="../../css/style.css"></style>
