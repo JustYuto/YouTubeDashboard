@@ -235,7 +235,9 @@
             />
             <div class="ml-2">
               <h3 class="section-title">{{ videoDetails.title }}</h3>
-              <p>0 views・15 Nov 2023</p>
+              <p>
+                0 views・{{ new Date(videoDetails.date).toLocaleDateString() }}
+              </p>
               <div class="d-flex align-items-center">
                 <img
                   :src="channelProfileUrl"
@@ -307,11 +309,12 @@ export default {
     return {
       videoDetails: {
         title: "",
-        tags: "",
+        tags: [],
         description: "",
         thumbnail: "",
         channelTitle: "",
         channelId: "",
+        date: "",
       },
       channelProfileUrl: "",
       isTagVolumeTooShort: false,
@@ -320,12 +323,24 @@ export default {
     };
   },
   created() {
-    this.videoDetails.title = this.$route.query.title || "";
-    this.videoDetails.tags = this.$route.query.tags || "";
-    this.videoDetails.description = this.$route.query.description || "";
-    this.videoDetails.thumbnail = this.$route.query.thumbnail || "";
-    this.videoDetails.channelTitle = this.$route.query.channelTitle || "";
-    this.videoDetails.channelId = this.$route.query.channelId || "";
+    const {
+      title,
+      tags,
+      description,
+      thumbnail,
+      channelTitle,
+      channelId,
+      date,
+    } = this.$route.query;
+    this.videoDetails = {
+      title,
+      tags,
+      description,
+      thumbnail,
+      channelTitle,
+      channelId,
+      date,
+    };
 
     this.getChannelProfileUrl();
   },
@@ -346,8 +361,8 @@ export default {
     },
     updateTags() {
       this.videoDetails.tagsArray = this.videoDetails.tags
-        .split(",")
-        .map((tag) => tag.trim());
+        ? this.videoDetails.tags.split(",").map((tag) => tag.trim())
+        : [];
     },
     checkTitleLength() {
       this.isTitleTooShort = this.videoDetails.title.length < 20;
@@ -375,7 +390,9 @@ export default {
     },
 
     checkTagVolume() {
-      this.isTagVolumeTooShort = this.videoDetails.tags.length < 100;
+      this.isTagVolumeTooShort = this.videoDetails.tags
+        ? this.videoDetails.tags.length < 100
+        : true;
     },
 
     recheckTagVolume() {
@@ -424,7 +441,7 @@ export default {
       return this.videoDetails.title.length;
     },
     tagsCharacterCount() {
-      return this.videoDetails.tags.length;
+      return this.videoDetails.tags ? this.videoDetails.tags.length : 0;
     },
     descriptionCharacterCount() {
       return this.videoDetails.description.length;
