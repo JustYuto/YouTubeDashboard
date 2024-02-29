@@ -90,9 +90,9 @@
     </nav>
   </div>
 
-  <div class="container py-5">
+  <div class="container">
     <div class="row">
-      <div class="col-md-12 text-center mb-5">
+      <div class="col-md-12">
         <h2>Videos</h2>
       </div>
     </div>
@@ -102,19 +102,42 @@
         v-for="(video, index) in videos"
         :key="index"
       >
-        <div class="card">
-          <img
-            :src="video.snippet.thumbnails.high.url"
-            class="card-img-top"
-            alt="Video thumbnail"
-          />
-          <div class="card-body">
-            <h5 class="card-title">{{ video.snippet.title }}</h5>
-            <p class="card-text">{{ video.snippet.description }}</p>
+        <router-link
+          :to="{
+            name: 'fix-video',
+            params: {
+              videoId: video.id,
+            },
+            query: {
+              title: video.snippet.title,
+              tags: video.snippet.tags,
+              description: video.snippet.description,
+              thumbnail: video.snippet.thumbnails.high.url,
+              channelTitle: video.snippet.channelTitle,
+              channelId: video.snippet.channelId,
+              date: video.snippet.publishedAt,
+            },
+          }"
+        >
+          <div class="card" style="background-color: transparent">
+            <img
+              :src="video.snippet.thumbnails.high.url"
+              class="card-img-top"
+              alt="Thumbnail of the video"
+            />
           </div>
-          <div class="card-footer">
-            <small class="text-muted">323K Views - 23 Oct 2022</small>
-          </div>
+        </router-link>
+        <div class="card-body">
+          <h5 class="card-title">{{ video.snippet.title }}</h5>
+          <p class="card-text">{{ video.snippet.channelTitle }}</p>
+        </div>
+        <div>
+          <small class="text-muted"
+            >Views -
+            {{
+              new Date(video.snippet.publishedAt).toLocaleDateString()
+            }}</small
+          >
         </div>
       </div>
     </div>
@@ -134,7 +157,7 @@ export default {
     ...mapState(["videos"]),
   },
   mounted() {
-    console.log("取得した動画情報:", this.videos);
+    console.log("Video info:", this.videos);
   },
   methods: {
     // fetchVideos() {

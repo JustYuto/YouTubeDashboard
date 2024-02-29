@@ -90,7 +90,6 @@ app.listen(port, () => {
 });
 
 app.get("/api/videos", (req, res) => {
-  console.log("/api/videosのserver.js動いてるよ");
   if (savedVideos) {
     res.status(200).json(savedVideos);
   } else {
