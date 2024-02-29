@@ -54,6 +54,19 @@
     </div>
   </header>
   <div class="container-fluid" id="main-container">
+    <div class="row">
+      <div class="row finances-header">
+        <div class="col-md-2">
+          <h1>Finances</h1>
+        </div>
+        <div class="col-md-5 text-right finances-details">
+          <p>Next Payout: <strong>$3,254</strong> on 09' 22</p>
+        </div>
+        <div class="col-md-5 text-right finances-details">
+          <p>All Payouts: <strong>$23,543</strong> since signup</p>
+        </div> 
+      </div>
+    </div>
     <!-- Upper Row -->
     <div class="row">
       <!-- Multiline Chart Column -->
@@ -63,16 +76,28 @@
       <!-- Multiselect Column -->
       <div class="col-md-6">
         <div class="multiselect-col">
-          <div v-for="(channel, index) in channels" :key="index" class="mb-2 d-flex align-items-center">
+          <div class="channels-list" style="height: 270px; overflow-y: auto;">
+          <div v-for="(channel, index) in channels" :key="index" class="channel-item d-flex align-items-center">
             <input 
               type="checkbox" 
               :value="channel" 
               v-model="selectedChannels" 
               :id="`channel-${index}`"
-              class="me-1"
+              class="channel-checkbox"
             >
-            <img :src="channel.profilePic" alt="" class="profile-pic me-1" style="width: 25px; height: 25px; border-radius: 50%;">
-            <label :for="`channel-${index}`" :title="`Subscribers: ${channel.subscribers}`">{{ channel.name }}</label>
+            <label :for="`channel-${index}`" class="channel-label d-flex align-items-center">
+              <img :src="channel.profilePic" alt="" class="profile-pic me-1" style="width: 40px; height: 40px; border-radius: 50%;">
+              <div>
+                <span>{{ channel.name }}</span>
+                <span class="subscribers">{{ channel.subscribers }}</span>
+              </div>
+              <span class="dot" :style="{ backgroundColor: channel.color }"></span>
+            </label>
+          </div>
+        </div>
+          <div class="button-container d-flex justify-content-between">
+            <button @click="selectAllChannels" class="btn btn-custom">Select All</button>
+            <button @click="deselectAllChannels" class="btn btn-custom">Deselect All</button>
           </div>
         </div>
       </div>
@@ -92,8 +117,8 @@
         <h2>History</h2>
         <div v-for="(item, index) in history" :key="index" class="history-item">
           <div class="history-content">
-            <span>{{ item.date }}</span>
             <span>{{ item.name }}</span>
+            <span>{{ item.date }}</span>
             <span :class="{'text-positive': item.amount > 0, 'text-negative': item.amount < 0}">
               {{ item.amount > 0 ? '+' : '' }}${{ item.amount }}
             </span>
@@ -113,73 +138,91 @@ export default {
     return {
       selectedChannels: [],
       channels: [
-        { name: 'Marques Brownlee', subscribers: '6M', profilePic: '/assets/Marques Brownlee.jpg' },
-        { name: 'Mr Beast - Jimmy', subscribers: '16M', profilePic: '/assets/Mr Beast.jpg'},
-        { name: 'Ms Yeah 办公室小野', subscribers: '63M', profilePic: '/assets/Ms Yeah.jpg' },
-        { name: "Whindersson Nunes", subscribers: "1M",profilePic: '/assets/Whindersson Nunes.jpeg' },
-        { name: "HolaSoyGerman", subscribers: "2M",profilePic: '/assets/HolaSoyGerman.jpg' },
-        { name: "Liza Koshy", subscribers: "3M",profilePic: '/assets/Liza Koshy.jpg' }
+        { name: 'Marques Brownlee', subscribers: '6M', profilePic: '/assets/Marques Brownlee.jpg',color: '#FF0000'},
+        { name: 'Mr Beast - Jimmy', subscribers: '16M', profilePic: '/assets/Mr Beast.jpg',color: '#FFC107'},
+        { name: 'Ms Yeah 办公室小野', subscribers: '63M', profilePic: '/assets/Ms Yeah.jpg',color: '#EEABD1' },
+        { name: "Whindersson Nunes", subscribers: "1M",profilePic: '/assets/Whindersson Nunes.jpeg',color: '#28A745' },
+        { name: "HolaSoyGerman", subscribers: "2M",profilePic: '/assets/HolaSoyGerman.jpg',color: '#AACCFF' },
+        { name: "Liza Koshy", subscribers: "3M",profilePic: '/assets/Liza Koshy.jpg',color: '#EAEAEA' }
         // Add other channels here
       ],
       totalEarnings: 2000,
       percentageIncrease: 5,
       history: [
-        { name: 'Video A', date: '2022-01-01', amount: 200 },
-        { name: 'Video B', date: '2022-01-02', amount: 300 },
-        { name: 'Video C', date: '2022-01-01', amount: 500 },
-        { name: 'Video D', date: '2022-01-03', amount: 700 },
-        { name: 'Video E', date: '2022-01-01', amount: 100 },
-        { name: 'Video F', date: '2022-01-04', amount: 900 }
+        { name: 'Earnings YouTube Channel', date: '2022-01-01', amount: 200 },
+        { name: 'Payment Regular', date: '2022-01-02', amount: 300 },
+        { name: 'Earnings YouTube Recruiter', date: '2022-01-01', amount: 500 },
+        { name: 'Earnings YouTube Channel', date: '2022-01-03', amount: 700 },
+        { name: 'Payment Regular', date: '2022-01-01', amount: 100 },
+        { name: 'Earnings YouTube Recruiter', date: '2022-01-04', amount: 900 }
         // Add other history items here
       ],
+      colors: [
+        'rgba(255, 99, 132, 1)',
+        'rgba(54, 162, 235, 1)',
+        'rgba(255, 206, 86, 1)',
+        'rgba(75, 192, 192, 1)',
+        'rgba(153, 102, 255, 1)',
+        'rgba(255, 159, 64, 1)',
+        'rgba(199, 199, 199, 1)',
+        'rgba(83, 102, 255, 1)',
+        'rgba(40, 159, 64, 1)',
+        'rgba(210, 45, 53, 1)',
+      ],
       earningsData: {
-        // Populate with your earnings data
+        'Marques Brownlee': [0, 10, 5, 15, 23, 21, 28],
+        'Mr Beast - Jimmy': [10, 20, 13, 18, 27, 29, 26],
+        'Ms Yeah 办公室小野': [25, 18, 15, 25, 23, 31, 29],
+        'Whindersson Nunes': [13, 10, 25, 15, 27, 28, 32],
+        'HolaSoyGerman': [20, 15, 18, 31, 21, 30, 36],
+        'Liza Koshy': [12, 22, 23, 18, 17, 29, 16]
       }
     };
   },
   mounted() {
+    this.selectAllChannels();
     this.renderEarningsChart();
     this.renderMonthlyEarningsChart();
   },
   methods: {
+    selectAllChannels() {
+      this.selectedChannels = this.channels.map(channel => channel);
+    }, 
+    deselectAllChannels() {
+      this.selectedChannels = [];
+    },
+    destroyChart() {
+      if (this.chartInstance) {
+        this.chartInstance.destroy();
+        this.chartInstance = null;
+      }
+    },
     renderEarningsChart() {
+      this.destroyChart(); // Destroy the existing chart before creating a new one
       const ctx = document.getElementById('earningsChart').getContext('2d');
-      new Chart(ctx, {
+      this.chartInstance = new Chart(ctx, {
         type: 'line',
         data: {
           labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
-          datasets: [
-            {
-              label: 'Earnings',
-              data: [0, 10, 5, 15, 23, 21, 28],
-              borderColor: 'rgba(75,192,192,1)', // color of the line
-              backgroundColor: 'rgba(75,192,192,1)', // fill color under the line
-              borderWidth: 2 // thickness of the line
-            },
-            {
-              label: 'Earnings',
-              data: [10, 20, 13, 18, 27, 29, 26],
-              borderColor: 'rgba(255,0,127,1)', // color of the line
-              backgroundColor: 'rgba(255,0,127,1)', // fill color under the line
-              borderWidth: 2 // thickness of the line
-            },            
-            {
-              label: 'Earnings',
-              data: [25, 18, 15, 25, 23, 31, 29],
-              borderColor: 'rgba(0,255,127,1)', // color of the line
-              backgroundColor: 'rgba(75,192,192,1)', // fill color under the line
-              borderWidth: 2 // thickness of the line
-            },
-            {
-              label: 'Earnings',
-              data: [13, 10, 25, 15, 27, 28, 32],
-              borderColor: 'rgba(255,255,0,1)', // color of the line
-              backgroundColor: 'rgba(255,255,0,1)', // fill color under the line
-              borderWidth: 2 // thickness of the line
-            }
-          ]
-        }
-      });
+          datasets: this.selectedChannels.map(channel => { // Removed 'index' from here
+            return {
+              label: channel.name,
+              data: this.earningsData[channel.name],
+              borderColor: channel.color,
+              backgroundColor: this.getTransparentColor(channel.color),
+              borderWidth: 2
+          };
+        })
+      }
+    });
+  },
+    getRandomColor() {
+      // This is a placeholder function. You should replace it with actual logic to generate random colors.
+      return `rgba(${Math.floor(Math.random() * 255)}, ${Math.floor(Math.random() * 255)}, ${Math.floor(Math.random() * 255)}, 1)`;
+    },
+    getTransparentColor(color) {
+      // This is a placeholder function. You should replace it with actual logic to convert colors to their transparent equivalents.
+      return color.replace('1)', '0.2)');
     },
     renderMonthlyEarningsChart() {
       const ctx = document.getElementById('monthlyEarningsChart').getContext('2d');
@@ -220,6 +263,12 @@ export default {
         }
       });
     }
+  },
+  watch: {
+    selectedChannels: function () {
+      // This function will run whenever selectedChannels changes
+      this.renderEarningsChart();
+    }
   }
 };
 </script>
@@ -227,7 +276,7 @@ export default {
 <style>
   #main-container {
     padding-top: 50px; /* Adjust this value based on the height of your navbar */
-    padding-left: 350px; /* Adjust this value based on the width of your sidebar */
+    padding-left: 250px; /* Adjust this value based on the width of your sidebar */
   }
 
   /* Example media query for smaller screens */
@@ -235,7 +284,36 @@ export default {
     #main-container {
       padding-left: 100px; /* Smaller padding for smaller screens if the sidebar is also smaller */
     }
+    .finances-header .col-md-6 {
+    text-align: center; /* Center text for small screens */
+    }
+    .finances-header .col-md-6:first-child {
+      margin-bottom: 10px; /* Add space between the title and details on small screens */
+    }
   }
+
+  .finances-header {
+  background: rgba(18, 52, 86, 0.0); /* Replace with the gradient you want */
+  padding: 10px 0; /* Add padding as necessary */
+  color: #FFFFFF; /* Replace with the color of your text */
+  }
+
+  .finances-header h1 {
+    margin: 0;
+    padding: 0;
+    font-size: 24px; /* Adjust font size as needed */
+  }
+
+  .finances-details p {
+    margin: 0;
+    font-size: 18px; /* Adjust font size as needed */
+    line-height: 1.5; /* Adjust line height as needed */
+  }
+
+  .multiselect-col input[type="checkbox"] {
+  margin-right: 10px; /* Spacing after checkbox */
+  }
+
   .multiselect-col div {
     display: block;
   }
@@ -248,6 +326,7 @@ export default {
   .multiselect-col label {
     vertical-align: middle;
   }
+
   .history-list {
   padding: 0;
   }
@@ -262,6 +341,21 @@ export default {
     padding: 10px 0;
   }
 
+  .history-content > span {
+  flex: 1; /* Gives each span equal width */
+  text-align: center; /* Centers text within each span */
+  }
+
+  .history-content > span:first-child {
+  flex: 2; /* Makes the first child twice as wide as the others */
+  text-align: left; /* Aligns the first child to the left */
+  }
+
+  .history-content > span:last-child {
+  text-align: right; /* Aligns the last child to the right */
+  flex: 1;
+  }
+
   .text-positive {
     color: green;
   }
@@ -271,10 +365,78 @@ export default {
   }
 
   .profile-pic {
-    border-radius: 50%;
-    width: 30px; /* Adjust as needed */
-    height: 30px; /* Adjust as needed */
     object-fit: cover;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    margin: 0px 15px 0px 15px;
+  }
+
+  .channel-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between; /* This will push the dot to the far right */
+  padding: 5px; /* Adjust padding to your preference */
+  background: #333; /* Dark background color */
+  border-radius: 10px; /* Rounded corners for the items */
+  margin-bottom: 5px; /* Space between items */
+  }
+
+  .channels-list {
+    border: none; 
+    border-radius: 5px; 
+  }
+
+  .dot {
+  height: 12px;
+  width: 12px;
+  border-radius: 50%;
+  display: inline-block;
+  margin-right: 30px; 
+  }
+
+  .channel-label {
+  display: flex;
+  align-items: center;
+  flex-grow: 1;
+  }
+
+  .channel-label > div {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+    justify-content: center;
+  }
+
+  .subscribers {
+  display: block; /* Make the subscribers display under the channel name */
+  color: grey;
+  font-size: smaller;
+  margin-top: 2px;
+  }
+
+  .button-container .btn-custom {
+  flex: 1; /* Each button will take up equal space */
+  margin: 15px 5px; /* Spacing between buttons */
+  }
+
+  .btn-custom {
+    width: auto; /* Make buttons wider */
+    background-color: transparent; /* Make buttons transparent */
+    color: white; /* Text color */
+    border: 1px solid white !important; /* White border */
+    margin: 5px 0; /* Margin for spacing */
+  }
+
+  .btn-custom:hover {
+    background-color: #F0F0F0; /* Grey background on hover */
+    color: #000000; /* Change text color as needed */
+  }
+
+  /* Adjust the button container to make the buttons align nicely */
+  .d-flex.justify-content-center {
+    flex-direction: column; /* Stack buttons vertically */
+    align-items: stretch; /* Stretch buttons to fill the width */
   }
 
 </style>
