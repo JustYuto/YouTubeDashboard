@@ -60,7 +60,7 @@
           <h1>Finances</h1>
         </div>
         <div class="col-md-5 text-right finances-details">
-          <p>Next Payout: <strong>$3,254</strong> on 09' 22</p>
+          <p>Next Payout: <strong>$1,354</strong> on 03' 24</p>
         </div>
         <div class="col-md-5 text-right finances-details">
           <p>All Payouts: <strong>$23,543</strong> since signup</p>
@@ -89,7 +89,7 @@
               <img :src="channel.profilePic" alt="" class="profile-pic me-1" style="width: 40px; height: 40px; border-radius: 50%;">
               <div>
                 <span>{{ channel.name }}</span>
-                <span class="subscribers">{{ channel.subscribers }}</span>
+                <span class="subscribers">{{ channel.subscribers }} subscribers</span>
               </div>
               <span class="dot" :style="{ backgroundColor: channel.color }"></span>
             </label>
@@ -107,14 +107,36 @@
     <div class="row">
       <!-- This Month Earnings Column -->
       <div class="col-md-6">
-        <h2>This Month Earnings</h2>
+        <h3>This Month Earnings</h3>
         <p>Total: ${{ totalEarnings }}</p>
         <canvas id="monthlyEarningsChart"></canvas>
         <p>Percentage increase: {{ percentageIncrease }}%</p>
       </div>
       <!-- History Column -->
       <div class="col-md-6 history-list">
-        <h2>History</h2>
+        <div class="row">
+          <div class="col-auto">
+            <h3>History</h3>
+          </div>
+          <!--
+          <div class="col text-right">
+            <div class="dropdown ml-auto" @click="toggleDropdown">
+              <button class="btn btn-secondary dropdown-toggle" type="button col-md-6 d-flex justify-content-end">
+                All Categories
+              </button>
+              <div class="dropdown-menu" v-show="isDropdownOpen">
+                <a class="dropdown-item" href="#" @click.prevent="filterHistory('All')">All</a>
+                <a class="dropdown-item" href="#"
+                  v-for="category in uniqueCategories"
+                  :key="category"
+                  @click.prevent="filterHistory(category)">
+                  {{ category }}
+                </a>
+              </div>
+            </div>
+          </div>
+        -->
+        </div>
         <div v-for="(item, index) in history" :key="index" class="history-item">
           <div class="history-content">
             <span>{{ item.name }}</span>
@@ -140,20 +162,20 @@ export default {
       channels: [
         { name: 'Marques Brownlee', subscribers: '6M', profilePic: '/assets/Marques Brownlee.jpg',color: '#FF0000'},
         { name: 'Mr Beast - Jimmy', subscribers: '16M', profilePic: '/assets/Mr Beast.jpg',color: '#FFC107'},
-        { name: 'Ms Yeah 办公室小野', subscribers: '63M', profilePic: '/assets/Ms Yeah.jpg',color: '#EEABD1' },
+        { name: 'Ms Yeah 办公室小野', subscribers: '636K', profilePic: '/assets/Ms Yeah.jpg',color: '#EEABD1' },
         { name: "Whindersson Nunes", subscribers: "1M",profilePic: '/assets/Whindersson Nunes.jpeg',color: '#28A745' },
         { name: "HolaSoyGerman", subscribers: "2M",profilePic: '/assets/HolaSoyGerman.jpg',color: '#AACCFF' },
-        { name: "Liza Koshy", subscribers: "3M",profilePic: '/assets/Liza Koshy.jpg',color: '#EAEAEA' }
+        { name: "Liza Koshy", subscribers: "332K",profilePic: '/assets/Liza Koshy.jpg',color: '#EAEAEA' }
         // Add other channels here
       ],
       totalEarnings: 2000,
-      percentageIncrease: 5,
+      percentageIncrease: 15,
       history: [
         { name: 'Earnings YouTube Channel', date: '2022-01-01', amount: 200 },
-        { name: 'Payment Regular', date: '2022-01-02', amount: 300 },
+        { name: 'Payment Regular', date: '2022-01-02', amount: -300 },
         { name: 'Earnings YouTube Recruiter', date: '2022-01-01', amount: 500 },
         { name: 'Earnings YouTube Channel', date: '2022-01-03', amount: 700 },
-        { name: 'Payment Regular', date: '2022-01-01', amount: 100 },
+        { name: 'Payment Regular', date: '2022-01-01', amount: -100 },
         { name: 'Earnings YouTube Recruiter', date: '2022-01-04', amount: 900 }
         // Add other history items here
       ],
@@ -170,13 +192,14 @@ export default {
         'rgba(210, 45, 53, 1)',
       ],
       earningsData: {
-        'Marques Brownlee': [0, 10, 5, 15, 23, 21, 28],
-        'Mr Beast - Jimmy': [10, 20, 13, 18, 27, 29, 26],
-        'Ms Yeah 办公室小野': [25, 18, 15, 25, 23, 31, 29],
-        'Whindersson Nunes': [13, 10, 25, 15, 27, 28, 32],
-        'HolaSoyGerman': [20, 15, 18, 31, 21, 30, 36],
-        'Liza Koshy': [12, 22, 23, 18, 17, 29, 16]
-      }
+        'Marques Brownlee': [0, 100, 50, 150, 230, 210, 280],
+        'Mr Beast - Jimmy': [100, 200, 130, 180, 270, 290, 260],
+        'Ms Yeah 办公室小野': [250, 180, 150, 250, 230, 310, 290],
+        'Whindersson Nunes': [130, 100, 250, 150, 270, 280, 320],
+        'HolaSoyGerman': [200, 150, 180, 310, 210, 300, 360],
+        'Liza Koshy': [120, 220, 230, 180, 170, 290, 160]
+      },
+      isDropdownOpen: false
     };
   },
   mounted() {
@@ -185,6 +208,20 @@ export default {
     this.renderMonthlyEarningsChart();
   },
   methods: {
+    data() {
+      return {
+        selectedCategory: 'All', // To keep track of the selected category
+      };
+    },
+    methods: {
+      toggleDropdown() {
+      this.isDropdownOpen = !this.isDropdownOpen;
+    },
+      filterHistory(category) {
+        this.selectedCategory = category;
+      },
+      // other methods
+    },
     selectAllChannels() {
       this.selectedChannels = this.channels.map(channel => channel);
     }, 
@@ -269,6 +306,20 @@ export default {
       // This function will run whenever selectedChannels changes
       this.renderEarningsChart();
     }
+  },
+  computed: {
+    uniqueCategories() {
+      // Extracts all names from the history array and then filters out duplicates
+      const names = this.history.map(item => item.name);
+      return Array.from(new Set(names)); // Convert Set back to Array to get unique values
+    },
+    filteredHistory() {
+      if (this.selectedCategory === 'All') {
+        return this.history;
+      } else {
+        return this.history.filter(item => item.name === this.selectedCategory);
+      }
+    }
   }
 };
 </script>
@@ -301,12 +352,18 @@ export default {
   .finances-header h1 {
     margin: 0;
     padding: 0;
-    font-size: 24px; /* Adjust font size as needed */
+    font-size: 31px; /* Adjust font size as needed */
   }
 
   .finances-details p {
     margin: 0;
-    font-size: 18px; /* Adjust font size as needed */
+    font-size: 16px; /* Adjust font size as needed */
+    line-height: 1.5; /* Adjust line height as needed */
+  }
+
+  .finances-details strong {
+    margin: 0;
+    font-size: 19px; /* Adjust font size as needed */
     line-height: 1.5; /* Adjust line height as needed */
   }
 
@@ -321,14 +378,16 @@ export default {
   .multiselect-col input[type="checkbox"] {
     vertical-align: middle;
     margin-right: 0.5rem; /* Adjust spacing between checkbox and label as needed */
+    margin-left: 0.5rem;
   }
 
   .multiselect-col label {
     vertical-align: middle;
   }
 
-  .history-list {
-  padding: 0;
+  .history-list .col {
+  margin-right: -15px;
+  padding-right: 0;
   }
 
   .history-item + .history-item {
@@ -362,6 +421,11 @@ export default {
 
   .text-negative {
     color: red;
+  }
+
+  .dropdown {
+    flex: 1;
+    display: inline-block; /* Ensures the dropdown is aligned correctly */
   }
 
   .profile-pic {
