@@ -1,61 +1,98 @@
-const express = require('express');
-const axios = require('axios');
-const cors = require('cors');
+const express = require("express");
+const axios = require("axios");
+const cors = require("cors");
+const port = 3000;
 
-const { OAuth2Client } = require('google-auth-library');
-const oauth2Client = new OAuth2Client()
 
-const app = express();//Initializes a new Express application.
-//app.use(express.json());//This is a built-in middleware function in Express. It parses incoming requests with JSON payloads and is based on body-parser.
-app.use(cors());// Enable CORS for all routes
+const { OAuth2Client } = require("google-auth-library");
+const oauth2Client = new OAuth2Client();
+
+const app = express(); 
+let savedVideos = null;
+app.use(cors()); // Enable CORS for all routes
+app.use(express.json());
 
 //1. Call the Google SDK from the frontend using whatever frontend
 //2. Extract the code or access token and send to backend for verification.
 //3. Use backend Google api to verify the code or token.
 //4. If verified, sign them in the backend and then send a response to frontend
 
-  app.post('/auth/callback', async (req, res) => {
-    try {
-      // get the code from frontend, send Google api to verify the code
-      const code = req.headers.authorization;
-      console.log('Authorization Code:', code);
+app.post("/auth/callback", async (req, res) => {
+  try {
+    // get the code from frontend, send Google api to verify the code
+    const code = req.headers.authorization;
+    console.log("Authorization Code:", code);
 
-      // Exchange the authorization code for an access token
-      const response = await axios.post(
-        'https://oauth2.googleapis.com/token',
-        {
-          code,
-          client_id: '785497567658-16251n3ml1bu0mp440s4krbsi25obke7.apps.googleusercontent.com',
-          client_secret: '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',
-          redirect_uri: 'postmessage',
-          grant_type: 'authorization_code'
-        }
-      );
-      const accessToken = response.data.access_token;
-      console.log('Access Token:', accessToken);
+    // Exchange the authorization code for an access token
+    const response = await axios.post("https://oauth2.googleapis.com/token", {
+      code,
+      client_id:
+        "785497567658-16251n3ml1bu0mp440s4krbsi25obke7.apps.googleusercontent.com",
+      client_secret: "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",
+      redirect_uri: "postmessage",
+      grant_type: "authorization_code",
+    });
 
-      // Fetch user details using the access token
-      const userResponse = await axios.get(
-        'https://www.googleapis.com/oauth2/v3/userinfo',
-        {
-          headers: {
-            Authorization: `Bearer ${accessToken}`
+    const accessToken = response.data.access_token;
+    console.log("Access Token:", accessToken);
+
+    const youtubeResponse = await axios.get("https://www.googleapis.com/youtube/v3/channels", {
+          params: {
+              part: 'contentDetails',
+              mine: true, 
+              access_token: accessToken,
           }
-        }
-      );
-      const userDetails = userResponse.data;
-      console.log('User Details:', userDetails);
+      });
 
-      // Process user details and perform necessary actions
+      console.log("YouTube Channel Response:", youtubeResponse.data);
+      const uploadsPlaylistId = youtubeResponse.data.items[0].contentDetails.relatedPlaylists.uploads;
 
-      res.status(200).json({ message: 'Authentication successful' });
-    } catch (error) {
-      console.error('Error saving code:', error);
-      res.status(500).json({ message: 'Failed to save code' });
-    }
-  });
+      const videosResponse = await axios.get("https://www.googleapis.com/youtube/v3/playlistItems", {
+          params: {
+              part: 'snippet,contentDetails',
+              playlistId: uploadsPlaylistId,
+              maxResults: 25, 
+              access_token: accessToken,
+          }
+      });
+      console.log("YouTube Videos Response:", videosResponse.data); 
+      savedVideos = videosResponse.data;
+
+    // Fetch user details using the access token
+    const userResponse = await axios.get(
+      "https://www.googleapis.com/oauth2/v3/userinfo",
+      {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      }
+    );
+    console.log(userResponse);
+    const userDetails = userResponse.data;
+
+    const responsePayload = {
+      accessToken: accessToken,
+      videos: videosResponse.data,
+      user: userDetails,
+      message: "Authentication successful"
+    };
+
+    res.status(200).json(responsePayload);
+  } catch (error) {
+    console.error("Error saving code:", error);
+    res.status(500).json({ message: "Failed to save code" });
+  }
+});
 
 
-app.listen(8080, () => {
-    console.log('Server running on port 8080');
+app.listen(port, () => {
+  console.log(`Server running on port ${port}`);
+});
+
+app.get("/api/videos", (req, res) => {
+  if (savedVideos) {
+    res.status(200).json(savedVideos);
+  } else {
+    res.status(404).json({ message: "No videos found" });
+  }
 });

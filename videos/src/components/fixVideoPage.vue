@@ -14,12 +14,23 @@
       integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO"
       crossorigin="anonymous"
     />
+    <meta
+      name="google-signin-client_id"
+      content="913800804553-vlamv4rntbae79gc9n86e0mdt5vh9qfa.apps.googleusercontent.com"
+    />
   </head>
   <header role="banner" id="fh5co-header" :style="{ filter: blurStyle }">
     <div class="l-navbar" id="nav-bar">
       <nav class="nav">
         <div>
           <div class="nav_list">
+            <a href="#" class="nav_link active">
+              <img
+                src="@/assets/webtvasia logo.png"
+                alt="Logo"
+                class="logo-small"
+              />
+            </a>
             <a href="/" class="nav_link active">
               <i class="bx bx-grid-alt nav_icon"></i>
               <span class="nav_name">Home</span>
@@ -48,6 +59,10 @@
               <i class="bx bx-bar-chart-alt-2 nav_icon"></i>
               <span class="nav_name">Comments</span>
             </a>
+            <a href="/user_login" class="nav_link">
+              <i class="bx bx-bar-chart-alt-2 nav_icon logout-bt"></i>
+              <span class="nav_name">Log out</span>
+            </a>
           </div>
         </div>
       </nav>
@@ -55,7 +70,7 @@
   </header>
   <div class="gradient"></div>
   <div class="container" :style="{ filter: blurStyle }">
-    <nav class="navbar navbar-expand-lg bg-body-tertiary">
+    <nav class="navbar navbar-expand-lg">
       <div class="container-fluid">
         <a class="navbar-brand">Fix Video Details</a>
         <div
@@ -220,7 +235,9 @@
             />
             <div class="ml-2">
               <h3 class="section-title">{{ videoDetails.title }}</h3>
-              <p>0 views・15 Nov 2023</p>
+              <p>
+                0 views・{{ new Date(videoDetails.date).toLocaleDateString() }}
+              </p>
               <div class="d-flex align-items-center">
                 <img
                   :src="channelProfileUrl"
@@ -242,15 +259,13 @@
             </div>
           </div>
         </div>
-        <div>
-          <div class="content-tips-header">
-            <h2>Content Tips</h2>
-          </div>
+        <div class="content-tips-header">
+          <h2 class="navbar-brand">Content Tips</h2>
           <div class="video-display">
             <div class="video-card">
               <iframe
                 width="400"
-                height="315"
+                height="300"
                 src="https://www.youtube.com/embed/pgrMDBEbjQE?si=qcwl-23JNrFADUg7"
                 title="YouTube video player"
                 frameborder="0"
@@ -261,7 +276,7 @@
             <div class="video-card">
               <iframe
                 width="400"
-                height="315"
+                height="300"
                 src="https://www.youtube.com/embed/9DEeMG_Gidw?si=_1hDjON4nGcpyeG3"
                 title="YouTube video player"
                 frameborder="0"
@@ -272,7 +287,7 @@
             <div class="video-card">
               <iframe
                 width="400"
-                height="315"
+                height="300"
                 src="https://www.youtube.com/embed/hoRbf6QC4eA?si=HaatTmwKPOHsFCDW"
                 title="YouTube video player"
                 frameborder="0"
@@ -294,11 +309,12 @@ export default {
     return {
       videoDetails: {
         title: "",
-        tags: "",
+        tags: [],
         description: "",
         thumbnail: "",
         channelTitle: "",
         channelId: "",
+        date: "",
       },
       channelProfileUrl: "",
       isTagVolumeTooShort: false,
@@ -307,12 +323,24 @@ export default {
     };
   },
   created() {
-    this.videoDetails.title = this.$route.query.title || "";
-    this.videoDetails.tags = this.$route.query.tags || "";
-    this.videoDetails.description = this.$route.query.description || "";
-    this.videoDetails.thumbnail = this.$route.query.thumbnail || "";
-    this.videoDetails.channelTitle = this.$route.query.channelTitle || "";
-    this.videoDetails.channelId = this.$route.query.channelId || "";
+    const {
+      title,
+      tags,
+      description,
+      thumbnail,
+      channelTitle,
+      channelId,
+      date,
+    } = this.$route.query;
+    this.videoDetails = {
+      title,
+      tags,
+      description,
+      thumbnail,
+      channelTitle,
+      channelId,
+      date,
+    };
 
     this.getChannelProfileUrl();
   },
@@ -333,8 +361,8 @@ export default {
     },
     updateTags() {
       this.videoDetails.tagsArray = this.videoDetails.tags
-        .split(",")
-        .map((tag) => tag.trim());
+        ? this.videoDetails.tags.split(",").map((tag) => tag.trim())
+        : [];
     },
     checkTitleLength() {
       this.isTitleTooShort = this.videoDetails.title.length < 20;
@@ -362,7 +390,9 @@ export default {
     },
 
     checkTagVolume() {
-      this.isTagVolumeTooShort = this.videoDetails.tags.length < 100;
+      this.isTagVolumeTooShort = this.videoDetails.tags
+        ? this.videoDetails.tags.length < 100
+        : true;
     },
 
     recheckTagVolume() {
@@ -411,7 +441,7 @@ export default {
       return this.videoDetails.title.length;
     },
     tagsCharacterCount() {
-      return this.videoDetails.tags.length;
+      return this.videoDetails.tags ? this.videoDetails.tags.length : 0;
     },
     descriptionCharacterCount() {
       return this.videoDetails.description.length;
