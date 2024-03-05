@@ -48,6 +48,10 @@
               <i class="bx bx-bar-chart-alt-2 nav_icon"></i>
               <span class="nav_name">Comments</span>
             </a>
+            <a href="/user_login" class="nav_link">
+              <i class="bx bx-bar-chart-alt-2 nav_icon logout-bt"></i>
+              <span class="nav_name">Log out</span>
+            </a>
           </div>
         </div>
       </nav>
@@ -145,14 +149,12 @@
 </template>
 
 <script>
-// import axios from "axios";
+import axios from "axios";
 import { mapState } from "vuex";
 
 export default {
   name: "VideoHomePage",
-  // mounted() {
-  //   this.fetchVideos();
-  // },
+
   computed: {
     ...mapState(["videos"]),
   },
@@ -160,36 +162,20 @@ export default {
     console.log("Video info:", this.videos);
   },
   methods: {
-    // fetchVideos() {
-    //   this.$store.dispatch("fetchVideos");
-    // },
-    // async searchVideos() {
-    //   const accessToken = localStorage.getItem("youtube_access_token");
-    //   if (!accessToken) {
-    //     console.error("Access token is not available.");
-    //     return;
-    //   }
-    //   try {
-    //     const response = await axios.get(
-    //       `https://www.googleapis.com/youtube/v3/search`,
-    //       {
-    //         headers: {
-    //           Authorization: `Bearer ${accessToken}`,
-    //         },
-    //         params: {
-    //           part: "snippet",
-    //           q: this.searchKeyword,
-    //           maxResults: 5,
-    //           type: "video",
-    //         },
-    //       }
-    //     );
-    //     console.log("YouTube API Response:", response.data);
-    //     this.videos = response.data.items;
-    //   } catch (error) {
-    //     console.error("Error searching YouTube videos:", error);
-    //   }
-    // },
+    async searchVideos() {
+      try {
+        const channelId = "UCA9fJKX89e65JN-ASY4H3uQ";
+        const response = await axios.get(
+          `https://www.googleapis.com/youtube/v3/search?part=snippet&channelId=${channelId}&maxResults=5&order=date&type=video&q=${this.searchKeyword}&key=AIzaSyBuR7Xkx_wvsvEiFbwaj4eklNWGE0ih7XU`
+        );
+
+        console.log("YouTube API Response:", response.data);
+
+        this.videos = response.data.items;
+      } catch (error) {
+        console.error("Error fetching YouTube videos:", error);
+      }
+    },
   },
 
   // const apiKey = "AIzaSyBuR7Xkx_wvsvEiFbwaj4eklNWGE0ih7XU";

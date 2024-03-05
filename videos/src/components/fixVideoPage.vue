@@ -236,7 +236,7 @@
             <div class="ml-2">
               <h3 class="section-title">{{ videoDetails.title }}</h3>
               <p>
-                0 views・{{ new Date(videoDetails.date).toLocaleDateString() }}
+                {{ new Date(videoDetails.date).toLocaleDateString() }}
               </p>
               <div class="d-flex align-items-center">
                 <img
@@ -254,7 +254,13 @@
                 </div>
               </div>
               <div class="mt-3">
-                <p>{{ videoDetails.description }}</p>
+                <p>
+                  {{
+                    videoDetails.description.length > 100
+                      ? videoDetails.description.substring(0, 100) + "..."
+                      : videoDetails.description
+                  }}
+                </p>
               </div>
             </div>
           </div>
@@ -405,8 +411,30 @@ export default {
       this.isTagVolumeTooShort = false;
       this.$forceUpdate();
     },
-    saveData() {
-      this.isSaveSuccess = true;
+    async saveData() {
+      try {
+        const serverEndpoint = "http://localhost:3000/updateVideo";
+
+        const requestData = {
+          videoId: this.videoDetails.videoId,
+          title: this.videoDetails.title,
+          description: this.videoDetails.description,
+          accessToken: localStorage.getItem("youtubeAccessToken"),
+        };
+
+        console.log("requestData: ", requestData);
+        const response = await axios.post(serverEndpoint, requestData);
+
+        if (response.status === 200) {
+          alert("Video updated successfully!");
+        } else {
+          console.error("Failed to update video:", response);
+          alert("Failed to update video.");
+        }
+      } catch (error) {
+        console.error("Error updating video:", error);
+        alert("Error updating video.");
+      }
     },
 
     closeSaveSuccessPopup() {

@@ -116,26 +116,6 @@ export default {
     };
   },
   methods: {
-    onGoogleAuthSuccess(googleUser) {
-      const accessToken = googleUser.getAuthResponse().access_token;
-      localStorage.setItem("youtube_access_token", accessToken);
-      console.log(
-        "Saved Access Token:",
-        localStorage.getItem("youtube_access_token")
-      );
-
-      axios
-        .post("/auth/youtube", { accessToken })
-        .then(() => {
-          this.$nextTick(() => {
-            this.$router.push("/video_HomePage");
-          });
-        })
-        .catch((error) => {
-          console.error("Error during YouTube authentication:", error);
-        });
-    },
-
     manualLogin() {
       //temp
       if (this.email && this.password) {
@@ -169,8 +149,9 @@ export default {
             client_id:
               "785497567658-16251n3ml1bu0mp440s4krbsi25obke7.apps.googleusercontent.com",
             scope:
-              "email profile openid https://www.googleapis.com/auth/youtube https://www.googleapis.com/auth/youtube",
+              "email profile openid https://www.googleapis.com/auth/youtube.force-ssl",
             redirect_uri: "http://localhost:3000/auth/callback",
+
             callback: (response) => {
               if (response.code) {
                 console.log(response);
@@ -193,7 +174,7 @@ export default {
           { headers }
         );
         console.log("Response", response);
-        //this.userDetails = response.data;
+        localStorage.setItem("youtubeAccessToken", response.data.accessToken);
         this.videos = response.data.videos.items;
         console.log("YouTube videos data:", this.videos);
         this.$store.commit("setVideos", this.videos);

@@ -36,6 +36,7 @@ app.post("/auth/callback", async (req, res) => {
     const accessToken = response.data.access_token;
     console.log("Access Token:", accessToken);
 
+
     const youtubeResponse = await axios.get("https://www.googleapis.com/youtube/v3/channels", {
           params: {
               part: 'contentDetails',
@@ -51,7 +52,7 @@ app.post("/auth/callback", async (req, res) => {
           params: {
               part: 'snippet,contentDetails',
               playlistId: uploadsPlaylistId,
-              maxResults: 25, 
+              maxResults: 100, 
               access_token: accessToken,
           }
       });
@@ -88,6 +89,32 @@ app.post("/auth/callback", async (req, res) => {
 app.listen(port, () => {
   console.log(`Server running on port ${port}`);
 });
+
+app.post("/updateVideo", async (req, res) => {
+  console.log("AccessToken：", req.body.accessToken)
+  const { videoId, title, description, accessToken } = req.body;
+  try {
+    const response = await axios.put(`https://www.googleapis.com/youtube/v3/videos?part=snippet`, {
+      id: videoId,
+      snippet: {
+        title,
+        description,
+      },
+    }, {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+        "Content-Type": "application/json",
+      },
+    });
+
+    res.status(200).json({ message: "Video updated successfully", data: response.data });
+  } catch (error) {
+    console.error("Error updating video:", error);
+    console.log(error.response.data);
+    res.status(500).json({ message: "Failed to update video", error: error.response.data });
+}
+});
+
 
 app.get("/api/videos", (req, res) => {
   if (savedVideos) {
