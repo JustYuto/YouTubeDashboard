@@ -28,7 +28,7 @@
               <i class="bx bx-user nav_icon"></i>
               <span class="nav_name">Videos</span>
             </a>
-            <a href="#" class="nav_link">
+            <a href="#" @click.prevent="goToFinancePage" class="nav_link">
               <i class="bx bx-message-square-detail nav_icon"></i>
               <span class="nav_name">Finances</span>
             </a>
@@ -160,36 +160,9 @@ export default {
     console.log("Video info:", this.videos);
   },
   methods: {
-    // fetchVideos() {
-    //   this.$store.dispatch("fetchVideos");
-    // },
-    // async searchVideos() {
-    //   const accessToken = localStorage.getItem("youtube_access_token");
-    //   if (!accessToken) {
-    //     console.error("Access token is not available.");
-    //     return;
-    //   }
-    //   try {
-    //     const response = await axios.get(
-    //       `https://www.googleapis.com/youtube/v3/search`,
-    //       {
-    //         headers: {
-    //           Authorization: `Bearer ${accessToken}`,
-    //         },
-    //         params: {
-    //           part: "snippet",
-    //           q: this.searchKeyword,
-    //           maxResults: 5,
-    //           type: "video",
-    //         },
-    //       }
-    //     );
-    //     console.log("YouTube API Response:", response.data);
-    //     this.videos = response.data.items;
-    //   } catch (error) {
-    //     console.error("Error searching YouTube videos:", error);
-    //   }
-    // },
+    goToFinancePage() {
+    this.$router.push({ name: 'finance-info' });
+    },
   },
 
   // const apiKey = "AIzaSyBuR7Xkx_wvsvEiFbwaj4eklNWGE0ih7XU";
