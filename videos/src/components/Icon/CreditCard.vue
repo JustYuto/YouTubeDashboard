@@ -1,0 +1,8 @@
+<template>
+  <!-- changelog -->
+  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path fill-rule="evenodd" clip-rule="evenodd" d="M21 4H3V17H21V4ZM14.464 11.1526L17.7775 7.31472L17.0205 6.66122L13.8962 10.2801L10.8668 9.69529L10.5827 9.64044L10.3936 9.85948L6.52788 14.337L7.28481 14.9905L10.9614 10.732L13.9908 11.3168L14.2749 11.3717L14.464 11.1526Z" fill="white"/>
+</svg>
+
+</template>
+<script></script>
