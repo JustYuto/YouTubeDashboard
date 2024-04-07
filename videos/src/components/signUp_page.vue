@@ -24,6 +24,7 @@
             placeholder="Name"
             v-model="name"
             style="opacity: 0.7"
+            required
           />
           <br />
           <input
@@ -32,6 +33,7 @@
             placeholder="E-mail"
             v-model="e_mail"
             style="opacity: 0.7"
+            required
           />
           <br />
           <input
@@ -40,6 +42,7 @@
             placeholder="Password"
             v-model="password"
             style="opacity: 0.7"
+            required
           />
         </div>
         <div class="row">
@@ -55,9 +58,34 @@
   </div>
 </template>
     
-  <script>
-export default {};
+<script>
+import axios from "axios";
+
+export default {
+  data() {
+    return {
+      name: "",
+      e_mail: "",
+      password: "",
+    };
+  },
+  methods: {
+    createAccount() {
+      if (!this.e_mail.includes("@")) {
+        alert("Please enter a valid e-mail address.");
+        return;
+      }
+      if (this.password.length < 5) {
+        alert("Password must be at least 5 characters long.");
+        return;
+      }
+      this.saveAccount();
+    },
+    async saveAccount() {},
+  },
+};
 </script>
+
     
   <style>
 .logo-small {
