@@ -135,21 +135,13 @@
           <h5 class="card-title">{{ video.snippet.title }}</h5>
           <p class="card-text">{{ video.snippet.channelTitle }}</p>
         </div>
-        <div>
-          <!-- <small class="text-muted"
-            >Views -
-            {{
-              new Date(video.snippet.publishedAt).toLocaleDateString()
-            }}</small
-          > -->
-        </div>
+        <div></div>
       </div>
     </div>
   </div>
 </template>
 
 <script>
-// import axios from "axios";
 import { mapState } from "vuex";
 
 export default {
@@ -157,6 +149,8 @@ export default {
   data() {
     return {
       currentTab: "All Videos",
+      searchKeyword: "",
+      videos: [],
     };
   },
   // mounted() {
@@ -170,23 +164,28 @@ export default {
           (video) =>
             video.snippet.title.length <= 20 || video.snippet.title.length >= 70
         );
+      } else if (this.searchKeyword.trim()) {
+        return this.videos.filter((video) =>
+          video.snippet.title
+            .toLowerCase()
+            .includes(this.searchKeyword.toLowerCase())
+        );
       }
       return this.videos;
     },
   },
   mounted() {
-    console.log("Video info:", this.videos);
+    this.fetchVideos();
   },
   methods: {
-    goToFinancePage() {
-      this.$router.push({ name: "finance-info" });
+    fetchVideos() {
+      this.videos = this.$store.state.videos;
+      this.filteredVideos = this.videos;
     },
     changeTab(tabName) {
       this.currentTab = tabName;
     },
   },
-
-  // const apiKey = "AIzaSyBuR7Xkx_wvsvEiFbwaj4eklNWGE0ih7XU";
 };
 </script>
 
