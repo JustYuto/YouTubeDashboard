@@ -76,13 +76,17 @@
           </form>
           <ul class="navbar-nav ml-auto">
             <li class="nav-item">
-              <a class="nav-link active" aria-current="page" href="#">To Fix</a>
+              <a class="nav-link" href="#" @click.prevent="changeTab('To Fix')"
+                >To Fix</a
+              >
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="#">Ignored</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="#">All Videos</a>
+              <a
+                class="nav-link"
+                href="#"
+                @click.prevent="changeTab('All Videos')"
+                >All Videos</a
+              >
             </li>
           </ul>
         </div>
@@ -99,7 +103,7 @@
     <div class="row">
       <div
         class="col-lg-4 col-md-6 mb-4"
-        v-for="(video, index) in videos"
+        v-for="(video, index) in filteredVideos"
         :key="index"
       >
         <router-link
@@ -132,12 +136,12 @@
           <p class="card-text">{{ video.snippet.channelTitle }}</p>
         </div>
         <div>
-          <small class="text-muted"
+          <!-- <small class="text-muted"
             >Views -
             {{
               new Date(video.snippet.publishedAt).toLocaleDateString()
             }}</small
-          >
+          > -->
         </div>
       </div>
     </div>
@@ -150,18 +154,35 @@ import { mapState } from "vuex";
 
 export default {
   name: "VideoHomePage",
+  data() {
+    return {
+      currentTab: "All Videos",
+    };
+  },
   // mounted() {
   //   this.fetchVideos();
   // },
   computed: {
     ...mapState(["videos"]),
+    filteredVideos() {
+      if (this.currentTab === "To Fix") {
+        return this.videos.filter(
+          (video) =>
+            video.snippet.title.length <= 20 || video.snippet.title.length >= 70
+        );
+      }
+      return this.videos;
+    },
   },
   mounted() {
     console.log("Video info:", this.videos);
   },
   methods: {
     goToFinancePage() {
-    this.$router.push({ name: 'finance-info' });
+      this.$router.push({ name: "finance-info" });
+    },
+    changeTab(tabName) {
+      this.currentTab = tabName;
     },
   },
 
