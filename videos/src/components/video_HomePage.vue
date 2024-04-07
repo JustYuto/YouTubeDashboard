@@ -48,6 +48,11 @@
               <i class="bx bx-bar-chart-alt-2 nav_icon"></i>
               <span class="nav_name">Comments</span>
             </a>
+            <a href="#" class="nav_link" @click.prevent="logout">
+              <i class="bx bx-log-out nav_icon"></i>
+              <span class="nav_name">Logout</span>
+            </a>
+
           </div>
         </div>
       </nav>
@@ -162,6 +167,14 @@ export default {
   methods: {
     goToFinancePage() {
     this.$router.push({ name: 'finance-info' });
+    },
+    logout() {
+      // Example logout implementation
+      // Clear user data, e.g., remove tokens from localStorage
+      localStorage.removeItem("userToken"); // Adjust based on how you store tokens
+
+      // Redirect to login page or another appropriate action
+      this.$router.push({ name: 'user-login' }); // Adjust the route name as necessary
     },
   },
 

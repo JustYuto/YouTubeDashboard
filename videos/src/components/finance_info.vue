@@ -24,7 +24,7 @@
               <i class="bx bx-grid-alt nav_icon"></i>
               <span class="nav_name">Home</span>
             </a>
-            <a href="#" class="nav_link">
+            <a href="#" @click.prevent="goToVideoPage" class="nav_link">
               <i class="bx bx-user nav_icon"></i>
               <span class="nav_name">Videos</span>
             </a>
@@ -158,6 +158,7 @@ Chart.register(LineController, LineElement, PointElement, LinearScale, CategoryS
 export default {
   data() {
     return {
+      analyticsData: null, // For storing the received data
       selectedChannels: [],
       channels: [
         { name: 'Marques Brownlee', subscribers: '6M', profilePic: '/assets/Marques Brownlee.jpg',color: '#FF0000'},
@@ -206,12 +207,18 @@ export default {
     this.selectAllChannels();
     this.renderEarningsChart();
     this.renderMonthlyEarningsChart();
+    if (this.$route.query.analyticsData) {
+    this.analyticsData = JSON.parse(this.$route.query.analyticsData);}
+    // Now you have your analytics data ready to be used
   },
   methods: {
     data() {
       return {
         selectedCategory: 'All', // To keep track of the selected category
       };
+    },
+    goToVideoPage() {
+      this.$router.push({ name: 'home-video' });
     },
     methods: {
       toggleDropdown() {
@@ -220,7 +227,6 @@ export default {
       filterHistory(category) {
         this.selectedCategory = category;
       },
-      // other methods
     },
     selectAllChannels() {
       this.selectedChannels = this.channels.map(channel => channel);

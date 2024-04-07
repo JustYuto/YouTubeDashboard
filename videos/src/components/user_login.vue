@@ -46,13 +46,13 @@
         <div class="form-check">
           <div class="row">
             <div class="col-sm-5">
-              <input type="checkbox" class="float-left" id="rememberMe" />
-              <label for="rememberMe float-left">Remember me</label>
+              <input type="checkbox" id="rememberMe" />
+              <label for="rememberMe">Remember me</label>
             </div>
             <a
               href="#"
               @click="login"
-              class="float-right col-sm-5"
+              class="float-right col-sm-6"
               style="text-align: right; padding-right: 10px"
               >Forgot password?</a
             >
@@ -60,32 +60,33 @@
         </div>
 
         <!-- Login and Google Login Buttons -->
-        <div class="row">
-          <button
-            @click="manualLogin"
-            class="btn btn-primary col-sm-5 float-left"
-          >
-            Login
-          </button>
-          <br />
+        <div class="container">
+          <div class="row" >
+            <button
+              @click="manualLogin" class="col-sm-5 btn btn-primary">
+              Login
+            </button>
 
-          <button @click="login" class="btn btn-secondary col-sm-5 float-right">
-            Login Using Google
-          </button>
-          <vue3-google-login
-            v-on:googleLoginSuccess="onGoogleAuthSuccess"
-            v-on:googleLoginFailure="onGoogleAuthFail"
-          >
-          </vue3-google-login>
-          <!--from back end-->
-          <div v-if="userDetails">
-            <h2>User Details</h2>
-            <p>Name: {{ userDetails.name }}</p>
-            <p>Email: {{ userDetails.email }}</p>
-            <p>
-              Profile Picture:
-              <img :src="userDetails.picture" alt="Profile Picture" />
-            </p>
+            <button @click="login" class="col-sm-5 btn btn-secondary" style="margin-right: -28px">
+              Google Login
+            </button>
+            <!--
+            <vue3-google-login
+              v-on:googleLoginSuccess="onGoogleAuthSuccess"
+              v-on:googleLoginFailure="onGoogleAuthFail"
+            >
+            </vue3-google-login>
+            -->
+            <!--from back end-->
+            <div v-if="userDetails">
+              <h2>User Details</h2>
+              <p>Name: {{ userDetails.name }}</p>
+              <p>Email: {{ userDetails.email }}</p>
+              <p>
+                Profile Picture:
+                <img :src="userDetails.picture" alt="Profile Picture" />
+              </p>
+            </div>
           </div>
         </div>
 
@@ -168,8 +169,7 @@ export default {
           .initCodeClient({
             client_id:
               "785497567658-16251n3ml1bu0mp440s4krbsi25obke7.apps.googleusercontent.com",
-            scope:
-              "email profile openid https://www.googleapis.com/auth/youtube https://www.googleapis.com/auth/youtube",
+            scope: "email profile openid https://www.googleapis.com/auth/youtube https://www.googleapis.com/auth/yt-analytics.readonly https://www.googleapis.com/auth/yt-analytics-monetary.readonly",
             redirect_uri: "http://localhost:3000/auth/callback",
             callback: (response) => {
               if (response.code) {
@@ -177,8 +177,7 @@ export default {
                 this.sendCodeToBackend(response.code);
               }
             },
-          })
-          .requestCode(); //Google authentication and consent screens are displayed.
+          }).requestCode(); //Google authentication and consent screens are displayed.
       });
     },
     async sendCodeToBackend(code) {
@@ -208,6 +207,29 @@ export default {
         console.error("Failed to send authorization code:", error);
       }
     },
+    async fetchYouTubeAnalyticsData() {
+    const accessToken = localStorage.getItem('youtube_access_token');
+    try {
+      const response = await axios.get('https://youtubeanalytics.googleapis.com/v2/reports', {
+        params: {
+          // Define your parameters here, for example:
+          ids: 'channel==MINE',
+          metrics: 'estimatedRevenue,adImpressions,cpm',
+          startDate: '2021-01-01',
+          endDate: '2021-12-31',
+          dimensions: 'month',
+        },
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      });
+
+      // Assuming you want to pass this data to another component, like finance_info
+      this.$router.push({ name: 'finance-info', query: { analyticsData: JSON.stringify(response.data) } });
+    } catch (error) {
+      console.error("Error fetching YouTube Analytics data:", error);
+    }
+  },
   },
 };
 </script>
@@ -249,9 +271,6 @@ input[type="checkbox"] {
   width: 100%;
   display: flex;
   justify-content: space-between;
-  margin-left: 0px;
-  margin-right: 0px;
-  padding-left: 0px;
 }
 
 .float-left {
@@ -285,6 +304,10 @@ input[type="checkbox"] {
 @media (max-width: 768px) {
   .logo-small {
     margin-left: 10px; /* Less spacing on smaller screens */
+  }
+
+  .right-content {
+    margin-left: 20px; /* Less spacing on smaller screens */
   }
 
   .img-fluid {
