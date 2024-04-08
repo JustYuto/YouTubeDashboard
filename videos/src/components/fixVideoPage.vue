@@ -60,7 +60,7 @@
               <span class="nav_name">Comments</span>
             </a>
             <a href="/user_login" class="nav_link">
-              <i class="bx bx-bar-chart-alt-2 nav_icon logout-bt"></i>
+              <i class="bx bx-bar-chart-alt-2 nav_icon"></i>
               <span class="nav_name">Log out</span>
             </a>
           </div>
@@ -254,7 +254,7 @@
                 </div>
               </div>
               <div class="mt-3">
-                <p>{{ videoDetails.description }}</p>
+                <p>{{ videoDetails.description.substring(0, 100) }}...</p>
               </div>
             </div>
           </div>
@@ -427,6 +427,7 @@ export default {
 
     discardChanges() {
       this.isDiscardChanges = false;
+      this.$router.push("/video_HomePage");
     },
   },
   mounted() {

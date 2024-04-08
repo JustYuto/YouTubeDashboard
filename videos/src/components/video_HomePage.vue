@@ -48,6 +48,10 @@
               <i class="bx bx-bar-chart-alt-2 nav_icon"></i>
               <span class="nav_name">Comments</span>
             </a>
+            <a href="/user_login" class="nav_link">
+              <i class="bx bx-bar-chart-alt-2 nav_icon"></i>
+              <span class="nav_name">Log out</span>
+            </a>
           </div>
         </div>
       </nav>
@@ -57,7 +61,6 @@
   <div class="container">
     <nav class="navbar navbar-expand-lg bg-body-tertiary">
       <div class="container-fluid">
-        <a class="navbar-brand">Videos</a>
         <div
           class="collapse navbar-collapse justify-content-center"
           id="navbarSupportedContent"
@@ -70,9 +73,6 @@
               placeholder="Search"
               aria-label="Search"
             />
-            <button class="btn btn-outline-success" type="submit">
-              Search
-            </button>
           </form>
           <ul class="navbar-nav ml-auto">
             <li class="nav-item">
@@ -103,7 +103,7 @@
     <div class="row">
       <div
         class="col-lg-4 col-md-6 mb-4"
-        v-for="(video, index) in filteredVideos"
+        v-for="(video, index) in paginatedVideos"
         :key="index"
       >
         <router-link
@@ -135,9 +135,21 @@
           <h5 class="card-title">{{ video.snippet.title }}</h5>
           <p class="card-text">{{ video.snippet.channelTitle }}</p>
         </div>
-        <div></div>
       </div>
     </div>
+    <div class="pagination-controls">
+      <button @click="previousPage" :disabled="currentPage === 1">
+        Previous
+      </button>
+      <button
+        @click="nextPage"
+        :disabled="currentPage * videosPerPage >= filteredVideos.length"
+      >
+        Next
+      </button>
+    </div>
+    <br /><br /><br /><br />
+    <br /><br /><br /><br />
   </div>
 </template>
 
@@ -151,6 +163,8 @@ export default {
       currentTab: "All Videos",
       searchKeyword: "",
       videos: [],
+      currentPage: 1,
+      videosPerPage: 6,
     };
   },
   // mounted() {
@@ -173,6 +187,11 @@ export default {
       }
       return this.videos;
     },
+    paginatedVideos() {
+      const start = (this.currentPage - 1) * this.videosPerPage;
+      const end = start + this.videosPerPage;
+      return this.filteredVideos.slice(start, end);
+    },
   },
   mounted() {
     this.fetchVideos();
@@ -184,6 +203,17 @@ export default {
     },
     changeTab(tabName) {
       this.currentTab = tabName;
+      this.currentPage = 1;
+    },
+    nextPage() {
+      if (this.currentPage * this.videosPerPage < this.filteredVideos.length) {
+        this.currentPage++;
+      }
+    },
+    previousPage() {
+      if (this.currentPage > 1) {
+        this.currentPage--;
+      }
     },
   },
 };
