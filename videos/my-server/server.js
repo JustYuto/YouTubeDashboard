@@ -37,12 +37,16 @@ app.post("/auth/callback", async (req, res) => {
         });
         console.log("Channels Response:", channelsResponse.data);
         const uploadsPlaylistId = channelsResponse.data.items[0].contentDetails.relatedPlaylists.uploads;
+        
+        // Extract channel ID
+        const channelID = channelsResponse.data.items[0].id;
+        console.log("Channel ID:", channelID);
 
         // Fetch YouTube playlist items
         const videosResponse = await youtube.playlistItems.list({
             part: 'snippet,contentDetails',
             playlistId: uploadsPlaylistId,
-            maxResults: 25,
+            maxResults: 24,
         });
         console.log("Videos Response:", videosResponse.data); 
         savedVideos = videosResponse.data;
@@ -55,11 +59,11 @@ app.post("/auth/callback", async (req, res) => {
         // Initializing YouTube Analytics API
         const youtubeAnalytics = google.youtubeAnalytics({ version: 'v2', auth });
         const analyticsResponse = await youtubeAnalytics.reports.query({
-            ids: 'channel==MINE',
+            ids: `channel==${channelID}`,
             startDate: '2024-01-01',
-            endDate: '2024-03-31',
-            metrics: 'views',
-            dimensions: 'day',
+            endDate: '2024-03-01',
+            metrics: 'views,likes,shares,estimatedRevenue,estimatedAdRevenue,estimatedRedPartnerRevenue,grossRevenue,monetizedPlaybacks,playbackBasedCpm,adImpressions,cpm',
+            dimensions: 'month',
         });
         console.log("Analytics Response:", analyticsResponse.data);
 

@@ -7,13 +7,22 @@
       content="width=device-width, initial-scale=1, shrink-to-fit=no"
     />
 
-    <!-- Bootstrap CSS -->
+    <!-- Bootstrap CSS 4 (to be migrated)
     <link
       rel="stylesheet"
       href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css"
       integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO"
       crossorigin="anonymous"
-    />
+    />-->
+    <link 
+    href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" 
+    rel="stylesheet" 
+    integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" 
+    crossorigin="anonymous">
+    <!-- Bootstrap CSS -->
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
+
   </head>
   <header role="banner" id="fh5co-header">
     <div class="l-navbar" id="nav-bar">
@@ -59,10 +68,10 @@
         <div class="col-md-2">
           <h1>Finances</h1>
         </div>
-        <div class="col-md-5 text-right finances-details">
-          <p>Next Payout: <strong>$1,354</strong> on 03' 24</p>
+        <div class="col-md-5 text-end finances-details">
+          <p>Next Payout: <strong>$1,354</strong> on 04' 24</p>
         </div>
-        <div class="col-md-5 text-right finances-details">
+        <div class="col-md-5 text-end finances-details">
           <p>All Payouts: <strong>$23,543</strong> since signup</p>
         </div> 
       </div>
@@ -118,8 +127,39 @@
           <div class="col-auto">
             <h3>History</h3>
           </div>
+          <div class="col text-end">
+            <div class="dropdown">
+              <button class="btn btn-custom dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                Filter History
+              </button>
+              <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                <a class="dropdown-item" href="#" @click.prevent="selectedFilter = 'All'">All</a>
+                <a class="dropdown-item" href="#" @click.prevent="selectedFilter = 'Earnings'">Earnings</a>
+                <a class="dropdown-item" href="#" @click.prevent="selectedFilter = 'Payment'">Payment</a>
+              </div>
+            </div>
+          </div>
+            <!--
+            <div class="dropdown">
+              <button class="btn btn-custom dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                Select Date Range
+              </button>
+              <div class="dropdown-menu p-4" aria-labelledby="dropdownMenuButton">
+                <div class="form-group">
+                  <label for="startDate">Start Date:</label>
+                  <input type="date" id="startDate" class="form-control" v-model="startDate">
+                </div>
+                <div class="form-group">
+                  <label for="endDate">End Date:</label>
+                  <input type="date" id="endDate" class="form-control" v-model="endDate">
+                </div>
+                <button class="btn btn-primary" @click="filterHistoryByDate">Apply</button>
+              </div>
+            </div>
+          </div>
+          -->
           <!--
-          <div class="col text-right">
+          <div class="col text-end">
             <div class="dropdown ml-auto" @click="toggleDropdown">
               <button class="btn btn-secondary dropdown-toggle" type="button col-md-6 d-flex justify-content-end">
                 All Categories
@@ -137,7 +177,7 @@
           </div>
         -->
         </div>
-        <div v-for="(item, index) in history" :key="index" class="history-item">
+        <div v-for="(item, index) in filteredHistory" :key="index" class="history-item">
           <div class="history-content">
             <span>{{ item.name }}</span>
             <span>{{ item.date }}</span>
@@ -154,10 +194,23 @@
 <script>
 import { Chart, LineController, LineElement, PointElement, LinearScale, CategoryScale } from 'chart.js';
 Chart.register(LineController, LineElement, PointElement, LinearScale, CategoryScale);
+//import 'vue-datepicker-ui/lib/vuedatepickerui.css';
+//import VueDatepickerUi from 'vue-datepicker-ui';
+//import { createPopper } from '@popperjs/core';
 
 export default {
+  components: {
+    //Datepicker: VueDatepickerUi
+  },
   data() {
     return {
+      /*
+      selectedDate: {
+      start: null,
+      end: null
+      },
+      */
+      selectedFilter: 'All',
       analyticsData: null, // For storing the received data
       selectedChannels: [],
       channels: [
@@ -174,10 +227,11 @@ export default {
       history: [
         { name: 'Earnings YouTube Channel', date: '2022-01-01', amount: 200 },
         { name: 'Payment Regular', date: '2022-01-02', amount: -300 },
-        { name: 'Earnings YouTube Recruiter', date: '2022-01-01', amount: 500 },
+        { name: 'Earnings YouTube Recruiter', date: '2022-01-03', amount: 500 },
         { name: 'Earnings YouTube Channel', date: '2022-01-03', amount: 700 },
-        { name: 'Payment Regular', date: '2022-01-01', amount: -100 },
-        { name: 'Earnings YouTube Recruiter', date: '2022-01-04', amount: 900 }
+        { name: 'Payment Regular', date: '2022-01-04', amount: -100 },
+        { name: 'Earnings YouTube Channel', date: '2022-01-04', amount: 900 },
+        { name: 'Payment Regular', date: '2022-01-06', amount: -150 }
         // Add other history items here
       ],
       colors: [
@@ -220,14 +274,14 @@ export default {
     goToVideoPage() {
       this.$router.push({ name: 'home-video' });
     },
-    methods: {
+    /*methods: {
       toggleDropdown() {
       this.isDropdownOpen = !this.isDropdownOpen;
     },
       filterHistory(category) {
         this.selectedCategory = category;
       },
-    },
+    },*/
     selectAllChannels() {
       this.selectedChannels = this.channels.map(channel => channel);
     }, 
@@ -259,6 +313,13 @@ export default {
       }
     });
   },
+  /*
+    onDateRangeChange(dates) {
+      this.startDate = dates.start;
+      this.endDate = dates.end;
+    // Implement filtering logic rmb
+    // For example, filter this.history based on this.startDate and this.endDate
+    },*/
     getRandomColor() {
       // This is a placeholder function. You should replace it with actual logic to generate random colors.
       return `rgba(${Math.floor(Math.random() * 255)}, ${Math.floor(Math.random() * 255)}, ${Math.floor(Math.random() * 255)}, 1)`;
@@ -320,12 +381,25 @@ export default {
       return Array.from(new Set(names)); // Convert Set back to Array to get unique values
     },
     filteredHistory() {
-      if (this.selectedCategory === 'All') {
-        return this.history;
-      } else {
-        return this.history.filter(item => item.name === this.selectedCategory);
-      }
+    if (this.selectedFilter === 'All') {
+      return this.history;
     }
+    return this.history.filter(item => item.name.includes(this.selectedFilter));
+    },
+    /*
+    filteredHistory() {
+      if (!this.startDate || !this.endDate) {
+        return this.history;
+      }
+
+      const start = new Date(this.startDate);
+      const end = new Date(this.endDate);
+
+      return this.history.filter(item => {
+        const itemDate = new Date(item.date);
+        return itemDate >= start && itemDate <= end;
+      });
+    },*/
   }
 };
 </script>
@@ -371,6 +445,10 @@ export default {
     margin: 0;
     font-size: 19px; /* Adjust font size as needed */
     line-height: 1.5; /* Adjust line height as needed */
+  }
+
+  .nav_link {
+  text-decoration: none;
   }
 
   .multiselect-col input[type="checkbox"] {
@@ -446,7 +524,7 @@ export default {
   display: flex;
   align-items: center;
   justify-content: space-between; /* This will push the dot to the far right */
-  padding: 5px; /* Adjust padding to your preference */
+  padding: 9px; /* Adjust padding to your preference */
   background: #333; /* Dark background color */
   border-radius: 10px; /* Rounded corners for the items */
   margin-bottom: 5px; /* Space between items */
@@ -493,14 +571,19 @@ export default {
   .btn-custom {
     width: auto; /* Make buttons wider */
     background-color: transparent; /* Make buttons transparent */
-    color: white; /* Text color */
+    color: white !important; /* Text color */
     border: 1px solid white !important; /* White border */
     margin: 5px 0; /* Margin for spacing */
   }
 
   .btn-custom:hover {
     background-color: #F0F0F0; /* Grey background on hover */
-    color: #000000; /* Change text color as needed */
+    color: #000000 !important; /* Change text color as needed */
+  }
+
+  .form-control {
+  border-radius: 0.25rem;
+  border: 1px solid #ced4da;
   }
 
   /* Adjust the button container to make the buttons align nicely */
