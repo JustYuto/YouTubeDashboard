@@ -48,6 +48,10 @@
               <i class="bx bx-bar-chart-alt-2 nav_icon"></i>
               <span class="nav_name">Comments</span>
             </a>
+            <a href="/user_login" class="nav_link">
+              <i class="bx bx-bar-chart-alt-2 nav_icon"></i>
+              <span class="nav_name">Log out</span>
+            </a>
           </div>
         </div>
       </nav>
@@ -57,7 +61,6 @@
   <div class="container">
     <nav class="navbar navbar-expand-lg bg-body-tertiary">
       <div class="container-fluid">
-        <a class="navbar-brand">Videos</a>
         <div
           class="collapse navbar-collapse justify-content-center"
           id="navbarSupportedContent"
@@ -70,19 +73,20 @@
               placeholder="Search"
               aria-label="Search"
             />
-            <button class="btn btn-outline-success" type="submit">
-              Search
-            </button>
           </form>
           <ul class="navbar-nav ml-auto">
             <li class="nav-item">
-              <a class="nav-link active" aria-current="page" href="#">To Fix</a>
+              <a class="nav-link" href="#" @click.prevent="changeTab('To Fix')"
+                >To Fix</a
+              >
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="#">Ignored</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="#">All Videos</a>
+              <a
+                class="nav-link"
+                href="#"
+                @click.prevent="changeTab('All Videos')"
+                >All Videos</a
+              >
             </li>
           </ul>
         </div>
@@ -99,7 +103,7 @@
     <div class="row">
       <div
         class="col-lg-4 col-md-6 mb-4"
-        v-for="(video, index) in videos"
+        v-for="(video, index) in paginatedVideos"
         :key="index"
       >
         <router-link
@@ -131,41 +135,87 @@
           <h5 class="card-title">{{ video.snippet.title }}</h5>
           <p class="card-text">{{ video.snippet.channelTitle }}</p>
         </div>
-        <div>
-          <small class="text-muted"
-            >Views -
-            {{
-              new Date(video.snippet.publishedAt).toLocaleDateString()
-            }}</small
-          >
-        </div>
       </div>
     </div>
+    <div class="pagination-controls">
+      <button @click="previousPage" :disabled="currentPage === 1">
+        Previous
+      </button>
+      <button
+        @click="nextPage"
+        :disabled="currentPage * videosPerPage >= filteredVideos.length"
+      >
+        Next
+      </button>
+    </div>
+    <br /><br /><br /><br />
+    <br /><br /><br /><br />
   </div>
 </template>
 
 <script>
-// import axios from "axios";
 import { mapState } from "vuex";
 
 export default {
   name: "VideoHomePage",
+  data() {
+    return {
+      currentTab: "All Videos",
+      searchKeyword: "",
+      videos: [],
+      currentPage: 1,
+      videosPerPage: 6,
+    };
+  },
   // mounted() {
   //   this.fetchVideos();
   // },
   computed: {
     ...mapState(["videos"]),
-  },
-  mounted() {
-    console.log("Video info:", this.videos);
-  },
-  methods: {
-    goToFinancePage() {
-    this.$router.push({ name: 'finance-info' });
+    filteredVideos() {
+      if (this.currentTab === "To Fix") {
+        return this.videos.filter(
+          (video) =>
+            video.snippet.title.length <= 20 || video.snippet.title.length >= 70
+        );
+      } else if (this.searchKeyword.trim()) {
+        return this.videos.filter((video) =>
+          video.snippet.title
+            .toLowerCase()
+            .includes(this.searchKeyword.toLowerCase())
+        );
+      }
+      return this.videos;
+    },
+    paginatedVideos() {
+      const start = (this.currentPage - 1) * this.videosPerPage;
+      const end = start + this.videosPerPage;
+      return this.filteredVideos.slice(start, end);
     },
   },
-
-  // const apiKey = "AIzaSyBuR7Xkx_wvsvEiFbwaj4eklNWGE0ih7XU";
+  mounted() {
+    this.fetchVideos();
+  },
+  methods: {
+    fetchVideos() {
+      this.videos = this.$store.state.videos;
+      this.filteredVideos = this.videos;
+    },
+    changeTab(tabName) {
+      this.currentTab = tabName;
+      this.currentPage = 1;
+    },
+    nextPage() {
+      if (this.currentPage * this.videosPerPage < this.filteredVideos.length) {
+        this.currentPage++;
+      }
+    },
+    previousPage() {
+      if (this.currentPage > 1) {
+        this.currentPage--;
+      }
+    },
+  },
 };
 </script>
 

@@ -91,7 +91,7 @@
 
         <!-- Sign Up Link -->
         <p class="text-center" style="padding-top: 10px">
-          No account? <a href="#" @click="login">Sign up</a>
+          No account? <a href="#" @click="signUp">Sign up</a>
         </p>
       </div>
     </div>
@@ -180,6 +180,9 @@ export default {
           })
           .requestCode(); //Google authentication and consent screens are displayed.
       });
+    },
+    signUp() {
+      this.$router.push("/signUp_page");
     },
     async sendCodeToBackend(code) {
       try {
