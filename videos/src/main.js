@@ -6,6 +6,8 @@ import FixVideoPage from "./components/fixVideoPage.vue";
 import UserLogin from "./components/user_login.vue";
 import FinanceInfo from "./components/finance_info.vue";
 import signUp_page from "./components/signUp_page.vue";
+import backOfficePage from "./components/backOfficePage.vue";
+import homePage from "./components/homePage.vue";
 import { Chart } from 'chart.js';
 import vue3GoogleLogin from 'vue3-google-login'
 import store from './store/index';
@@ -18,6 +20,8 @@ const routes = [
   { path: "/user_login", name: "user-login", component: UserLogin },
   { path: "/finance_info", name: "finance-info", component: FinanceInfo },
   { path: "/signUp_page", name: "signUp_page", component: signUp_page },
+  { path: "/backOfficePage", name: "backOfficePage", component: backOfficePage },
+  { path: "/homePage", name: "homePage", component: homePage },
 
 ];
 

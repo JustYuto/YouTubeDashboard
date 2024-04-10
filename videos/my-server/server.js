@@ -1,16 +1,63 @@
 const express = require("express");
 const axios = require("axios");
 const cors = require("cors");
+const fs = require("fs"); 
+const path = require("path"); 
 const port = 3000;
-
+const session = require('express-session'); 
+const mysql = require('mysql');
 
 const { OAuth2Client } = require("google-auth-library");
 const oauth2Client = new OAuth2Client();
 
 const app = express(); 
 let savedVideos = null;
-app.use(cors()); // Enable CORS for all routes
+app.use(cors({
+  origin: 'http://localhost:8080', 
+  credentials: true
+}));
 app.use(express.json());
+
+const connection = mysql.createConnection({
+  host     : 'localhost',
+  user     : 'root',
+  password : '',
+  database : 'dashboard'
+});
+
+connection.connect();
+
+app.use(session({
+  secret: 'secret_key',
+  resave: false, 
+  saveUninitialized: true, 
+  cookie: { secure: false } 
+}));
+
+
+app.post('/login', (req, res) => {
+  const email = req.body.email;
+  const password = req.body.password;
+  
+  connection.query('SELECT * FROM users WHERE email = ? AND password = ?', [email, password], (error, results) => {
+    if (error) throw error;
+    
+    if (results.length > 0) {
+      const user = results[0];
+      req.session.userId = user.id;
+      console.log(req.session.userId);
+      if (user.user_type === 'Manager') {
+        res.send({ success: true, userType: 'Manager', id: user.id, redirectTo: '/backOfficePage' });
+      } else if (user.user_type === 'YouTuber') {
+        res.send({ success: true, userType: 'YouTuber', id: user.id });
+      } else {
+        res.status(401).send({ success: false, message: 'Unauthorized' });
+      }
+    } else {
+      res.status(401).send({ success: false, message: 'Login failed' });
+    }
+  });
+});
 
 //1. Call the Google SDK from the frontend using whatever frontend
 //2. Extract the code or access token and send to backend for verification.
@@ -95,4 +142,94 @@ app.get("/api/videos", (req, res) => {
   } else {
     res.status(404).json({ message: "No videos found" });
   }
+});
+
+
+app.get("/api/report", (req, res) => {
+  // Check if there are any saved videos
+  if (savedVideos && savedVideos.items) {
+    // Create a string to hold your CSV data
+    let csvContent = "Video Title,Video ID,Video URL\n"; // CSV header
+
+    // Loop over savedVideos to add each to the CSV string
+    savedVideos.items.forEach((item) => {
+      const videoTitle = item.snippet.title.replace(/,/g, ""); // Remove commas to avoid CSV issues
+      const videoId = item.snippet.resourceId.videoId;
+      const videoUrl = `https://www.youtube.com/watch?v=${videoId}`;
+      csvContent += `${videoTitle},${videoId},${videoUrl}\n`; // Add video data to CSV string
+    });
+
+    // Define the path and filename for the CSV file
+    const filePath = path.join(__dirname, 'videos-report.csv');
+    // Write the CSV file to the server's file system
+    fs.writeFile(filePath, csvContent, (err) => {
+      if (err) {
+        console.error('Error writing CSV file:', err);
+        res.status(500).json({ message: "Failed to generate report" });
+        return;
+      }
+
+      // Set headers for downloading the file with a custom filename
+      res.setHeader('Content-Disposition', 'attachment; filename=videos-report.csv');
+      res.setHeader('Content-Type', 'text/csv');
+      // Send the CSV file content to the client, causing it to download
+      res.download(filePath, 'videos-report.csv', (err) => {
+        if (err) {
+          console.error('Error downloading CSV file:', err);
+        }
+        // Remove the file after sending it to the client
+        fs.unlink(filePath, (err) => {
+          if (err) console.error('Error deleting CSV file:', err);
+        });
+      });
+    });
+  } else {
+    // Send an error response if there are no videos
+    res.status(404).json({ message: "No videos to download" });
+  }
+});
+
+app.post('/cancellation-requests', (req, res) => {
+
+  const userId = req.body.user_id;
+
+  const query = 'INSERT INTO cancellation_requests (user_id, status) VALUES (?, ?)';
+  const values = [userId, 'pending'];
+
+  connection.query(query, values, (error, results) => {
+    if (error) {
+      console.error('Database error: ', error);
+      return res.status(500).send('Inner server error');
+    }
+
+    res.send('Your request was sent.');
+  });
+});
+
+app.get('/cancellation-requests/review', (req, res) => {
+  const query = 'SELECT * FROM cancellation_requests';
+  connection.query(query, (error, results) => {
+    if (error) {
+      console.error('Error fetching cancellation requests:', error);
+      res.status(500).send('Server error');
+    } else {
+      res.json(results);
+    }
+  });
+});
+
+app.patch('/cancellation-requests/status/:id', (req, res) => {
+  const { id } = req.params;
+  const { status } = req.body;
+
+
+  const query = 'UPDATE cancellation_requests SET status = ? WHERE id = ?';
+  connection.query(query, [status, id], (error, results) => {
+    if (error) {
+      console.error('Error updating cancellation request:', error);
+      res.status(500).send('Server error');
+    } else {
+      res.send('Cancellation request updated successfully.');
+    }
+  });
 });
