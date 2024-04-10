@@ -160,13 +160,16 @@ export default {
   // },
   computed: {
     ...mapState(["videos"]),
+    analyticsData() {
+    return this.$store.state.analyticsData;
+  },
   },
   mounted() {
     console.log("Video info:", this.videos);
   },
   methods: {
     goToFinancePage() {
-    this.$router.push({ name: 'finance-info' });
+      this.$router.push({ name: 'finance-info' });
     },
     logout() {
       // Example logout implementation

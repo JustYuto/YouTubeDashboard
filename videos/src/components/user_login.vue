@@ -201,35 +201,33 @@ export default {
         const userDetails = response.data;
         console.log("User Data:", userDetails);
         this.userDetails = userDetails;
-
+        
+        //store data for finance page
+        this.$store.commit('setAnalyticsData', response.data.analyticsData);
+        
+        // Navigate to the home-video page first
         this.$router.push("/video_HomePage");
+        
       } catch (error) {
         console.error("Failed to send authorization code:", error);
       }
     },
-    async fetchYouTubeAnalyticsData() {
+  async fetchYouTubeReportingData() {
     const accessToken = localStorage.getItem('youtube_access_token');
     try {
-      const response = await axios.get('https://youtubeanalytics.googleapis.com/v2/reports', {
-        params: {
-          // Define your parameters here, for example:
-          ids: 'channel==MINE',
-          metrics: 'estimatedRevenue,adImpressions,cpm',
-          startDate: '2021-01-01',
-          endDate: '2021-12-31',
-          dimensions: 'month',
-        },
+      // Assuming you've created a new endpoint to handle reporting API data
+      const response = await axios.get('/api/reportingData', {
         headers: {
           Authorization: `Bearer ${accessToken}`,
         },
       });
-
-      // Assuming you want to pass this data to another component, like finance_info
-      this.$router.push({ name: 'finance-info', query: { analyticsData: JSON.stringify(response.data) } });
+      console.log("Reporting Data:", response.data);
+      // Process and display your reporting data as needed
     } catch (error) {
-      console.error("Error fetching YouTube Analytics data:", error);
+      console.error("Error fetching YouTube Reporting data:", error);
     }
   },
+
   },
 };
 </script>

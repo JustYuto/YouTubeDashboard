@@ -66,7 +66,7 @@
     <div class="row">
       <div class="row finances-header">
         <div class="col-md-2">
-          <h1>Finances</h1>
+          <h1>Revenues</h1>
         </div>
         <div class="col-md-5 text-end finances-details">
           <p>Next Payout: <strong>$1,354</strong> on 04' 24</p>
@@ -80,7 +80,7 @@
     <div class="row">
       <!-- Multiline Chart Column -->
       <div class="col-md-6">
-        <canvas id="earningsChart"></canvas>
+        <canvas ref="earningsChart" id="earningsChart"></canvas>
       </div>
       <!-- Multiselect Column -->
       <div class="col-md-6">
@@ -116,9 +116,9 @@
     <div class="row">
       <!-- This Month Earnings Column -->
       <div class="col-md-6">
-        <h3>This Month Earnings</h3>
+        <h3>Monthly Earnings Breakdown</h3>
         <p>Total: ${{ totalEarnings }}</p>
-        <canvas id="monthlyEarningsChart"></canvas>
+        <canvas ref="monthlyEarningsChart" id="monthlyEarningsChart" width="400" height="200"></canvas>
         <p>Percentage increase: {{ percentageIncrease }}%</p>
       </div>
       <!-- History Column -->
@@ -192,6 +192,7 @@
 </template>
 
 <script>
+import { mapState } from 'vuex';
 import { Chart, LineController, LineElement, PointElement, LinearScale, CategoryScale } from 'chart.js';
 Chart.register(LineController, LineElement, PointElement, LinearScale, CategoryScale);
 //import 'vue-datepicker-ui/lib/vuedatepickerui.css';
@@ -199,19 +200,14 @@ Chart.register(LineController, LineElement, PointElement, LinearScale, CategoryS
 //import { createPopper } from '@popperjs/core';
 
 export default {
+  name: "FinanceInfo",
   components: {
     //Datepicker: VueDatepickerUi
   },
   data() {
     return {
-      /*
-      selectedDate: {
-      start: null,
-      end: null
-      },
-      */
+      monthlyEarningsChartInstance: null,
       selectedFilter: 'All',
-      analyticsData: null, // For storing the received data
       selectedChannels: [],
       channels: [
         { name: 'Marques Brownlee', subscribers: '6M', profilePic: '/assets/Marques Brownlee.jpg',color: '#FF0000'},
@@ -258,12 +254,27 @@ export default {
     };
   },
   mounted() {
-    this.selectAllChannels();
-    this.renderEarningsChart();
-    this.renderMonthlyEarningsChart();
-    if (this.$route.query.analyticsData) {
-    this.analyticsData = JSON.parse(this.$route.query.analyticsData);}
-    // Now you have your analytics data ready to be used
+        this.$nextTick(() => {
+            // Debugging: Log to see if this runs after DOM updates
+            console.log("mounted() and $nextTick(): ", this.$refs.earningsChart, this.$refs.monthlyEarningsChart);
+
+            // Ensure elements are present before attempting to access them
+            if (this.$refs.earningsChart && this.$refs.monthlyEarningsChart) {
+                const ctxEarnings = this.$refs.earningsChart.getContext('2d');
+                const ctxMonthlyEarnings = this.$refs.monthlyEarningsChart.getContext('2d');
+                
+                // Now safe to proceed with chart initialization
+                this.renderEarningsChart(ctxEarnings); // Pass the context to your method if needed
+                this.renderMonthlyEarningsChart(ctxMonthlyEarnings); // Adjust method to accept context
+            } else {
+                console.error("One or both canvas elements not found");
+            }
+        });
+    },
+  beforeUnmount() {
+    if (this.monthlyEarningsChartInstance) {
+      this.monthlyEarningsChartInstance.destroy();
+    }
   },
   methods: {
     data() {
@@ -274,14 +285,6 @@ export default {
     goToVideoPage() {
       this.$router.push({ name: 'home-video' });
     },
-    /*methods: {
-      toggleDropdown() {
-      this.isDropdownOpen = !this.isDropdownOpen;
-    },
-      filterHistory(category) {
-        this.selectedCategory = category;
-      },
-    },*/
     selectAllChannels() {
       this.selectedChannels = this.channels.map(channel => channel);
     }, 
@@ -296,7 +299,11 @@ export default {
     },
     renderEarningsChart() {
       this.destroyChart(); // Destroy the existing chart before creating a new one
-      const ctx = document.getElementById('earningsChart').getContext('2d');
+      if (!this.$refs.earningsChart) {
+        console.error('Earnings chart canvas element not found');
+        return;
+      }
+      const ctx = this.$refs.earningsChart.getContext('2d');
       this.chartInstance = new Chart(ctx, {
         type: 'line',
         data: {
@@ -313,13 +320,6 @@ export default {
       }
     });
   },
-  /*
-    onDateRangeChange(dates) {
-      this.startDate = dates.start;
-      this.endDate = dates.end;
-    // Implement filtering logic rmb
-    // For example, filter this.history based on this.startDate and this.endDate
-    },*/
     getRandomColor() {
       // This is a placeholder function. You should replace it with actual logic to generate random colors.
       return `rgba(${Math.floor(Math.random() * 255)}, ${Math.floor(Math.random() * 255)}, ${Math.floor(Math.random() * 255)}, 1)`;
@@ -328,53 +328,87 @@ export default {
       // This is a placeholder function. You should replace it with actual logic to convert colors to their transparent equivalents.
       return color.replace('1)', '0.2)');
     },
+    getColor(index) {
+      const colors = ['#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#6610f2']; // Example colors
+      return colors[index % colors.length];
+    },
+    initializeMonthlyEarningsChart() {
+      // Fetch or prepare the analytics data
+      const analyticsData = this.prepareAnalyticsData();
+      if (analyticsData) {
+        this.renderMonthlyEarningsChart(analyticsData);
+      }
+    },
+    prepareAnalyticsData() {
+      // Simulate fetching analytics data or prepare it from existing state
+      // This is where you would adapt your actual logic to fetch or format the data
+      // For demonstration, let's assume we return a simplified structure
+      return {
+        labels: ['January', 'February', 'March'], // Example month labels
+        datasets: [{
+          label: 'Earnings',
+          data: [1000, 1500, 1200], // Example earnings data
+          borderColor: 'rgb(75, 192, 192)',
+          tension: 0.1
+        }]
+      };
+    },
     renderMonthlyEarningsChart() {
-      const ctx = document.getElementById('monthlyEarningsChart').getContext('2d');
-      new Chart(ctx, {
+    console.log("Preparing to render monthly earnings chart with analytics data", this.analyticsData);
+    this.$nextTick(() => {
+    if (!this.analyticsData || !this.analyticsData.rows || !this.$refs.monthlyEarningsChart) {
+      console.error("Processed analytics data is not available, or canvas element not found.");
+      return;
+    }
+    const ctx = this.$refs.monthlyEarningsChart.getContext('2d');
+
+      const labels = this.analyticsData.rows.map(row => row[0]);
+      const datasets = this.analyticsData.columnHeaders.slice(1).map((header, index) => {
+        return {
+          label: header.name,
+          data: this.analyticsData.rows.map(row => row[index + 1]),
+          borderColor: this.colors[index % this.colors.length],
+          fill: false, // Ensure the area under the line isn't filled
+        };
+      });
+
+      if (this.monthlyEarningsChartInstance) {
+        this.monthlyEarningsChartInstance.destroy();
+      }
+
+      this.monthlyEarningsChartInstance = new Chart(ctx, {
         type: 'line',
-        data: {
-          labels: ['Week 1', 'Week 2', 'Week 3', 'Week 4', 'Week 5', 'Week 6'],
-          datasets: [
-            {
-              label: 'Monthly Earnings',
-              data: [500, 700, 1200, 1500, 1300, 1800],
-              borderColor: 'rgba(75,192,192,1)', // color of the line
-              backgroundColor: 'rgba(75,192,192,1)', // fill color under the line
-              borderWidth: 2 // thickness of the line
-            },
-            {
-              label: 'Monthly Earnings',
-              data: [1300, 900, 1500, 1700, 900, 1200],
-              borderColor: 'rgba(255,0,127,1)', // color of the line
-              backgroundColor: 'rgba(255,0,127,1)', // fill color under the line
-              borderWidth: 2 // thickness of the line
-            },
-            {
-              label: 'Monthly Earnings',
-              data: [1500, 900, 1200, 1700, 1300, 1600],
-              borderColor: 'rgba(0,255,127,1)', // color of the line
-              backgroundColor: 'rgba(0,255,127,1)', // fill color under the line
-              borderWidth: 2 // thickness of the line
-            },
-            {
-              label: 'Monthly Earnings',
-              data: [800, 1700, 2100, 1900, 2500, 2200],
-              borderColor: 'rgba(255,255,0,1)', // color of the line
-              backgroundColor: 'rgba(255,255,0,1)', // fill color under the line
-              borderWidth: 2 // thickness of the line
-            }
-          ]
+        data: { labels, datasets },
+        options: {
+          scales: {
+            y: { beginAtZero: true }
+          }
         }
       });
-    }
+    });
   },
-  watch: {
-    selectedChannels: function () {
-      // This function will run whenever selectedChannels changes
+},
+// For the watcher example, if you're not using newVal or oldVal, just omit them
+watch: {
+  selectedChannels: {
+    handler() {
       this.renderEarningsChart();
-    }
+      this.renderMonthlyEarningsChart();
+    },
+    deep: true
   },
+  analyticsData: {
+    handler() {
+      if (this.analyticsData && this.analyticsData.rows) {
+        this.renderMonthlyEarningsChart();
+      }
+    },
+    deep: true
+  }
+},
   computed: {
+    ...mapState(['analyticsData']),
+
     uniqueCategories() {
       // Extracts all names from the history array and then filters out duplicates
       const names = this.history.map(item => item.name);
@@ -386,21 +420,7 @@ export default {
     }
     return this.history.filter(item => item.name.includes(this.selectedFilter));
     },
-    /*
-    filteredHistory() {
-      if (!this.startDate || !this.endDate) {
-        return this.history;
-      }
-
-      const start = new Date(this.startDate);
-      const end = new Date(this.endDate);
-
-      return this.history.filter(item => {
-        const itemDate = new Date(item.date);
-        return itemDate >= start && itemDate <= end;
-      });
-    },*/
-  }
+  },
 };
 </script>
 

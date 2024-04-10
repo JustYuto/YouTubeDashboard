@@ -60,12 +60,19 @@ app.post("/auth/callback", async (req, res) => {
         const youtubeAnalytics = google.youtubeAnalytics({ version: 'v2', auth });
         const analyticsResponse = await youtubeAnalytics.reports.query({
             ids: `channel==${channelID}`,
-            startDate: '2024-01-01',
+            startDate: '2023-10-01',
             endDate: '2024-03-01',
-            metrics: 'views,likes,shares,estimatedRevenue,estimatedAdRevenue,estimatedRedPartnerRevenue,grossRevenue,monetizedPlaybacks,playbackBasedCpm,adImpressions,cpm',
+            metrics: 'estimatedRevenue,estimatedAdRevenue,grossRevenue,estimatedRedPartnerRevenue',
             dimensions: 'month',
         });
         console.log("Analytics Response:", analyticsResponse.data);
+        
+        // Fetch estimated revenue reports
+        fetchEstimatedRevenueReports(auth).then(() => {
+        //    console.log("Report fetching initiated.");
+        }).catch(error => {
+            console.error("Error initiating report fetching:", error);
+        });
 
         // Combine all the data into one response object
         const responsePayload = {
@@ -95,3 +102,36 @@ app.get("/api/videos", (req, res) => {
         res.status(404).json({ message: "No videos found" });
     }
 });
+
+async function fetchEstimatedRevenueReports(auth) {
+    const youtubeReporting = google.youtubereporting({ version: 'v1', auth });
+    try {
+        const reportTypesResponse = await youtubeReporting.reportTypes.list({});
+        // List available report types
+        // console.log(reportTypesResponse.data);
+        // Find the reportType object here
+        const reportType = reportTypesResponse.data.reportTypes.find(reportType => reportType.name.includes('estimated_revenue'));
+        
+        if (reportType) {
+            const reportTypeId = reportType.id; // Correctly use reportType within its scope
+            // Proceed with using reportTypeId...
+            console.log("Report Type ID:", reportTypeId); // Confirming we have the ID
+
+            const jobResponse = await youtubeReporting.jobs.create({
+                resource: {
+                    reportTypeId: reportTypeId,
+                    name: 'Estimated Revenue Report'
+                }
+            });
+            console.log("Job Response:", jobResponse.data);
+            // After creating the job, you'll need to periodically check for completion and then download the report.
+        } else {
+            console.error('Estimated revenue report type not found');
+            // Handle the case where the report type is not found
+        }
+    } catch (error) {
+        console.error("Error fetching estimated revenue reports:", error);
+    }
+}
+
+
