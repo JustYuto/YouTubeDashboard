@@ -206,7 +206,8 @@ export default {
   },
   data() {
     return {
-      monthlyEarningsChartInstance: null,
+      selectedCategory: 'All',
+      //monthlyEarningsChartInstance: null,
       selectedFilter: 'All',
       selectedChannels: [],
       channels: [
@@ -253,6 +254,24 @@ export default {
       isDropdownOpen: false
     };
   },
+  created() {
+    this.selectAllChannels();
+  }, 
+  computed: {
+    ...mapState(['analyticsData']),
+
+    uniqueCategories() {
+      // Extracts all names from the history array and then filters out duplicates
+      const names = this.history.map(item => item.name);
+      return Array.from(new Set(names)); // Convert Set back to Array to get unique values
+    },
+    filteredHistory() {
+    if (this.selectedFilter === 'All') {
+      return this.history;
+    }
+    return this.history.filter(item => item.name.includes(this.selectedFilter));
+    },
+  },
   mounted() {
         this.$nextTick(() => {
             // Debugging: Log to see if this runs after DOM updates
@@ -277,11 +296,6 @@ export default {
     }
   },
   methods: {
-    data() {
-      return {
-        selectedCategory: 'All', // To keep track of the selected category
-      };
-    },
     goToVideoPage() {
       this.$router.push({ name: 'home-video' });
     },
@@ -315,11 +329,11 @@ export default {
               borderColor: channel.color,
               backgroundColor: this.getTransparentColor(channel.color),
               borderWidth: 2
-          };
-        })
-      }
-    });
-  },
+            };
+          })
+        }
+      });
+    },
     getRandomColor() {
       // This is a placeholder function. You should replace it with actual logic to generate random colors.
       return `rgba(${Math.floor(Math.random() * 255)}, ${Math.floor(Math.random() * 255)}, ${Math.floor(Math.random() * 255)}, 1)`;
@@ -332,35 +346,13 @@ export default {
       const colors = ['#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#6610f2']; // Example colors
       return colors[index % colors.length];
     },
-    initializeMonthlyEarningsChart() {
-      // Fetch or prepare the analytics data
-      const analyticsData = this.prepareAnalyticsData();
-      if (analyticsData) {
-        this.renderMonthlyEarningsChart(analyticsData);
-      }
-    },
-    prepareAnalyticsData() {
-      // Simulate fetching analytics data or prepare it from existing state
-      // This is where you would adapt your actual logic to fetch or format the data
-      // For demonstration, let's assume we return a simplified structure
-      return {
-        labels: ['January', 'February', 'March'], // Example month labels
-        datasets: [{
-          label: 'Earnings',
-          data: [1000, 1500, 1200], // Example earnings data
-          borderColor: 'rgb(75, 192, 192)',
-          tension: 0.1
-        }]
-      };
-    },
     renderMonthlyEarningsChart() {
-    console.log("Preparing to render monthly earnings chart with analytics data", this.analyticsData);
-    this.$nextTick(() => {
-    if (!this.analyticsData || !this.analyticsData.rows || !this.$refs.monthlyEarningsChart) {
-      console.error("Processed analytics data is not available, or canvas element not found.");
-      return;
-    }
-    const ctx = this.$refs.monthlyEarningsChart.getContext('2d');
+      if (!this.analyticsData || !this.analyticsData.rows || !this.$refs.monthlyEarningsChart) {
+        console.error("Required conditions not met for rendering monthly earnings chart.");
+        return;
+      }
+
+      const ctx = this.$refs.monthlyEarningsChart.getContext('2d');
 
       const labels = this.analyticsData.rows.map(row => row[0]);
       const datasets = this.analyticsData.columnHeaders.slice(1).map((header, index) => {
@@ -385,7 +377,7 @@ export default {
           }
         }
       });
-    });
+    
   },
 },
 // For the watcher example, if you're not using newVal or oldVal, just omit them
@@ -393,7 +385,7 @@ watch: {
   selectedChannels: {
     handler() {
       this.renderEarningsChart();
-      this.renderMonthlyEarningsChart();
+      //this.renderMonthlyEarningsChart();
     },
     deep: true
   },
@@ -403,24 +395,10 @@ watch: {
         this.renderMonthlyEarningsChart();
       }
     },
-    deep: true
+    deep: true,
+    immediate: true
   }
 },
-  computed: {
-    ...mapState(['analyticsData']),
-
-    uniqueCategories() {
-      // Extracts all names from the history array and then filters out duplicates
-      const names = this.history.map(item => item.name);
-      return Array.from(new Set(names)); // Convert Set back to Array to get unique values
-    },
-    filteredHistory() {
-    if (this.selectedFilter === 'All') {
-      return this.history;
-    }
-    return this.history.filter(item => item.name.includes(this.selectedFilter));
-    },
-  },
 };
 </script>
 
@@ -520,7 +498,7 @@ watch: {
   }
 
   .text-positive {
-    color: green;
+    color: #4CAF50;
   }
 
   .text-negative {
