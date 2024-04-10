@@ -64,7 +64,7 @@
         </div>
         <div class="col-md-5 text-right finances-details">
           <p>All Payouts: <strong>$23,543</strong> since signup</p>
-        </div> 
+        </div>
       </div>
     </div>
     <!-- Upper Row -->
@@ -76,33 +76,54 @@
       <!-- Multiselect Column -->
       <div class="col-md-6">
         <div class="multiselect-col">
-          <div class="channels-list" style="height: 270px; overflow-y: auto;">
-          <div v-for="(channel, index) in channels" :key="index" class="channel-item d-flex align-items-center">
-            <input 
-              type="checkbox" 
-              :value="channel" 
-              v-model="selectedChannels" 
-              :id="`channel-${index}`"
-              class="channel-checkbox"
+          <div class="channels-list" style="height: 270px; overflow-y: auto">
+            <div
+              v-for="(channel, index) in channels"
+              :key="index"
+              class="channel-item d-flex align-items-center"
             >
-            <label :for="`channel-${index}`" class="channel-label d-flex align-items-center">
-              <img :src="channel.profilePic" alt="" class="profile-pic me-1" style="width: 40px; height: 40px; border-radius: 50%;">
-              <div>
-                <span>{{ channel.name }}</span>
-                <span class="subscribers">{{ channel.subscribers }} subscribers</span>
-              </div>
-              <span class="dot" :style="{ backgroundColor: channel.color }"></span>
-            </label>
+              <input
+                type="checkbox"
+                :value="channel"
+                v-model="selectedChannels"
+                :id="`channel-${index}`"
+                class="channel-checkbox"
+              />
+              <label
+                :for="`channel-${index}`"
+                class="channel-label d-flex align-items-center"
+              >
+                <img
+                  :src="channel.profilePic"
+                  alt=""
+                  class="profile-pic me-1"
+                  style="width: 40px; height: 40px; border-radius: 50%"
+                />
+                <div>
+                  <span>{{ channel.name }}</span>
+                  <span class="subscribers"
+                    >{{ channel.subscribers }} subscribers</span
+                  >
+                </div>
+                <span
+                  class="dot"
+                  :style="{ backgroundColor: channel.color }"
+                ></span>
+              </label>
+            </div>
           </div>
-        </div>
           <div class="button-container d-flex justify-content-between">
-            <button @click="selectAllChannels" class="btn btn-custom">Select All</button>
-            <button @click="deselectAllChannels" class="btn btn-custom">Deselect All</button>
+            <button @click="selectAllChannels" class="btn btn-custom">
+              Select All
+            </button>
+            <button @click="deselectAllChannels" class="btn btn-custom">
+              Deselect All
+            </button>
           </div>
         </div>
       </div>
     </div>
-    
+
     <!-- Lower Row -->
     <div class="row">
       <!-- This Month Earnings Column -->
@@ -135,14 +156,18 @@
               </div>
             </div>
           </div>
-        -->
-        </div>
+        --></div>
         <div v-for="(item, index) in history" :key="index" class="history-item">
           <div class="history-content">
             <span>{{ item.name }}</span>
             <span>{{ item.date }}</span>
-            <span :class="{'text-positive': item.amount > 0, 'text-negative': item.amount < 0}">
-              {{ item.amount > 0 ? '+' : '' }}${{ item.amount }}
+            <span
+              :class="{
+                'text-positive': item.amount > 0,
+                'text-negative': item.amount < 0,
+              }"
+            >
+              {{ item.amount > 0 ? "+" : "" }}${{ item.amount }}
             </span>
           </div>
         </div>
@@ -152,54 +177,97 @@
 </template>
 
 <script>
-import { Chart, LineController, LineElement, PointElement, LinearScale, CategoryScale } from 'chart.js';
-Chart.register(LineController, LineElement, PointElement, LinearScale, CategoryScale);
+import {
+  Chart,
+  LineController,
+  LineElement,
+  PointElement,
+  LinearScale,
+  CategoryScale,
+} from "chart.js";
+Chart.register(
+  LineController,
+  LineElement,
+  PointElement,
+  LinearScale,
+  CategoryScale
+);
 
 export default {
   data() {
     return {
       selectedChannels: [],
       channels: [
-        { name: 'Marques Brownlee', subscribers: '6M', profilePic: '/assets/Marques Brownlee.jpg',color: '#FF0000'},
-        { name: 'Mr Beast - Jimmy', subscribers: '16M', profilePic: '/assets/Mr Beast.jpg',color: '#FFC107'},
-        { name: 'Ms Yeah 办公室小野', subscribers: '636K', profilePic: '/assets/Ms Yeah.jpg',color: '#EEABD1' },
-        { name: "Whindersson Nunes", subscribers: "1M",profilePic: '/assets/Whindersson Nunes.jpeg',color: '#28A745' },
-        { name: "HolaSoyGerman", subscribers: "2M",profilePic: '/assets/HolaSoyGerman.jpg',color: '#AACCFF' },
-        { name: "Liza Koshy", subscribers: "332K",profilePic: '/assets/Liza Koshy.jpg',color: '#EAEAEA' }
+        {
+          name: "Marques Brownlee",
+          subscribers: "6M",
+          profilePic: "/assets/Marques Brownlee.jpg",
+          color: "#FF0000",
+        },
+        {
+          name: "Mr Beast - Jimmy",
+          subscribers: "16M",
+          profilePic: "/assets/Mr Beast.jpg",
+          color: "#FFC107",
+        },
+        {
+          name: "Ms Yeah 办公室小野",
+          subscribers: "636K",
+          profilePic: "/assets/Ms Yeah.jpg",
+          color: "#EEABD1",
+        },
+        {
+          name: "Whindersson Nunes",
+          subscribers: "1M",
+          profilePic: "/assets/Whindersson Nunes.jpeg",
+          color: "#28A745",
+        },
+        {
+          name: "HolaSoyGerman",
+          subscribers: "2M",
+          profilePic: "/assets/HolaSoyGerman.jpg",
+          color: "#AACCFF",
+        },
+        {
+          name: "Liza Koshy",
+          subscribers: "332K",
+          profilePic: "/assets/Liza Koshy.jpg",
+          color: "#EAEAEA",
+        },
         // Add other channels here
       ],
       totalEarnings: 2000,
       percentageIncrease: 15,
       history: [
-        { name: 'Earnings YouTube Channel', date: '2022-01-01', amount: 200 },
-        { name: 'Payment Regular', date: '2022-01-02', amount: -300 },
-        { name: 'Earnings YouTube Recruiter', date: '2022-01-01', amount: 500 },
-        { name: 'Earnings YouTube Channel', date: '2022-01-03', amount: 700 },
-        { name: 'Payment Regular', date: '2022-01-01', amount: -100 },
-        { name: 'Earnings YouTube Recruiter', date: '2022-01-04', amount: 900 }
+        { name: "Earnings YouTube Channel", date: "2022-01-01", amount: 200 },
+        { name: "Payment Regular", date: "2022-01-02", amount: -300 },
+        { name: "Earnings YouTube Recruiter", date: "2022-01-01", amount: 500 },
+        { name: "Earnings YouTube Channel", date: "2022-01-03", amount: 700 },
+        { name: "Payment Regular", date: "2022-01-01", amount: -100 },
+        { name: "Earnings YouTube Recruiter", date: "2022-01-04", amount: 900 },
         // Add other history items here
       ],
       colors: [
-        'rgba(255, 99, 132, 1)',
-        'rgba(54, 162, 235, 1)',
-        'rgba(255, 206, 86, 1)',
-        'rgba(75, 192, 192, 1)',
-        'rgba(153, 102, 255, 1)',
-        'rgba(255, 159, 64, 1)',
-        'rgba(199, 199, 199, 1)',
-        'rgba(83, 102, 255, 1)',
-        'rgba(40, 159, 64, 1)',
-        'rgba(210, 45, 53, 1)',
+        "rgba(255, 99, 132, 1)",
+        "rgba(54, 162, 235, 1)",
+        "rgba(255, 206, 86, 1)",
+        "rgba(75, 192, 192, 1)",
+        "rgba(153, 102, 255, 1)",
+        "rgba(255, 159, 64, 1)",
+        "rgba(199, 199, 199, 1)",
+        "rgba(83, 102, 255, 1)",
+        "rgba(40, 159, 64, 1)",
+        "rgba(210, 45, 53, 1)",
       ],
       earningsData: {
-        'Marques Brownlee': [0, 100, 50, 150, 230, 210, 280],
-        'Mr Beast - Jimmy': [100, 200, 130, 180, 270, 290, 260],
-        'Ms Yeah 办公室小野': [250, 180, 150, 250, 230, 310, 290],
-        'Whindersson Nunes': [130, 100, 250, 150, 270, 280, 320],
-        'HolaSoyGerman': [200, 150, 180, 310, 210, 300, 360],
-        'Liza Koshy': [120, 220, 230, 180, 170, 290, 160]
+        "Marques Brownlee": [0, 100, 50, 150, 230, 210, 280],
+        "Mr Beast - Jimmy": [100, 200, 130, 180, 270, 290, 260],
+        "Ms Yeah 办公室小野": [250, 180, 150, 250, 230, 310, 290],
+        "Whindersson Nunes": [130, 100, 250, 150, 270, 280, 320],
+        HolaSoyGerman: [200, 150, 180, 310, 210, 300, 360],
+        "Liza Koshy": [120, 220, 230, 180, 170, 290, 160],
       },
-      isDropdownOpen: false
+      isDropdownOpen: false,
     };
   },
   mounted() {
@@ -210,21 +278,21 @@ export default {
   methods: {
     data() {
       return {
-        selectedCategory: 'All', // To keep track of the selected category
+        selectedCategory: "All", // To keep track of the selected category
       };
     },
     methods: {
       toggleDropdown() {
-      this.isDropdownOpen = !this.isDropdownOpen;
-    },
+        this.isDropdownOpen = !this.isDropdownOpen;
+      },
       filterHistory(category) {
         this.selectedCategory = category;
       },
       // other methods
     },
     selectAllChannels() {
-      this.selectedChannels = this.channels.map(channel => channel);
-    }, 
+      this.selectedChannels = this.channels.map((channel) => channel);
+    },
     deselectAllChannels() {
       this.selectedChannels = [];
     },
@@ -236,207 +304,222 @@ export default {
     },
     renderEarningsChart() {
       this.destroyChart(); // Destroy the existing chart before creating a new one
-      const ctx = document.getElementById('earningsChart').getContext('2d');
+      const ctx = document.getElementById("earningsChart").getContext("2d");
       this.chartInstance = new Chart(ctx, {
-        type: 'line',
+        type: "line",
         data: {
-          labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
-          datasets: this.selectedChannels.map(channel => { // Removed 'index' from here
+          labels: [
+            "January",
+            "February",
+            "March",
+            "April",
+            "May",
+            "June",
+            "July",
+          ],
+          datasets: this.selectedChannels.map((channel) => {
+            // Removed 'index' from here
             return {
               label: channel.name,
               data: this.earningsData[channel.name],
               borderColor: channel.color,
               backgroundColor: this.getTransparentColor(channel.color),
-              borderWidth: 2
-          };
-        })
-      }
-    });
-  },
+              borderWidth: 2,
+            };
+          }),
+        },
+      });
+    },
     getRandomColor() {
       // This is a placeholder function. You should replace it with actual logic to generate random colors.
-      return `rgba(${Math.floor(Math.random() * 255)}, ${Math.floor(Math.random() * 255)}, ${Math.floor(Math.random() * 255)}, 1)`;
+      return `rgba(${Math.floor(Math.random() * 255)}, ${Math.floor(
+        Math.random() * 255
+      )}, ${Math.floor(Math.random() * 255)}, 1)`;
     },
     getTransparentColor(color) {
       // This is a placeholder function. You should replace it with actual logic to convert colors to their transparent equivalents.
-      return color.replace('1)', '0.2)');
+      return color.replace("1)", "0.2)");
     },
     renderMonthlyEarningsChart() {
-      const ctx = document.getElementById('monthlyEarningsChart').getContext('2d');
+      const ctx = document
+        .getElementById("monthlyEarningsChart")
+        .getContext("2d");
       new Chart(ctx, {
-        type: 'line',
+        type: "line",
         data: {
-          labels: ['Week 1', 'Week 2', 'Week 3', 'Week 4', 'Week 5', 'Week 6'],
+          labels: ["Week 1", "Week 2", "Week 3", "Week 4", "Week 5", "Week 6"],
           datasets: [
             {
-              label: 'Monthly Earnings',
+              label: "Monthly Earnings",
               data: [500, 700, 1200, 1500, 1300, 1800],
-              borderColor: 'rgba(75,192,192,1)', // color of the line
-              backgroundColor: 'rgba(75,192,192,1)', // fill color under the line
-              borderWidth: 2 // thickness of the line
+              borderColor: "rgba(75,192,192,1)", // color of the line
+              backgroundColor: "rgba(75,192,192,1)", // fill color under the line
+              borderWidth: 2, // thickness of the line
             },
             {
-              label: 'Monthly Earnings',
+              label: "Monthly Earnings",
               data: [1300, 900, 1500, 1700, 900, 1200],
-              borderColor: 'rgba(255,0,127,1)', // color of the line
-              backgroundColor: 'rgba(255,0,127,1)', // fill color under the line
-              borderWidth: 2 // thickness of the line
+              borderColor: "rgba(255,0,127,1)", // color of the line
+              backgroundColor: "rgba(255,0,127,1)", // fill color under the line
+              borderWidth: 2, // thickness of the line
             },
             {
-              label: 'Monthly Earnings',
+              label: "Monthly Earnings",
               data: [1500, 900, 1200, 1700, 1300, 1600],
-              borderColor: 'rgba(0,255,127,1)', // color of the line
-              backgroundColor: 'rgba(0,255,127,1)', // fill color under the line
-              borderWidth: 2 // thickness of the line
+              borderColor: "rgba(0,255,127,1)", // color of the line
+              backgroundColor: "rgba(0,255,127,1)", // fill color under the line
+              borderWidth: 2, // thickness of the line
             },
             {
-              label: 'Monthly Earnings',
+              label: "Monthly Earnings",
               data: [800, 1700, 2100, 1900, 2500, 2200],
-              borderColor: 'rgba(255,255,0,1)', // color of the line
-              backgroundColor: 'rgba(255,255,0,1)', // fill color under the line
-              borderWidth: 2 // thickness of the line
-            }
-          ]
-        }
+              borderColor: "rgba(255,255,0,1)", // color of the line
+              backgroundColor: "rgba(255,255,0,1)", // fill color under the line
+              borderWidth: 2, // thickness of the line
+            },
+          ],
+        },
       });
-    }
+    },
   },
   watch: {
     selectedChannels: function () {
       // This function will run whenever selectedChannels changes
       this.renderEarningsChart();
-    }
+    },
   },
   computed: {
     uniqueCategories() {
       // Extracts all names from the history array and then filters out duplicates
-      const names = this.history.map(item => item.name);
+      const names = this.history.map((item) => item.name);
       return Array.from(new Set(names)); // Convert Set back to Array to get unique values
     },
     filteredHistory() {
-      if (this.selectedCategory === 'All') {
+      if (this.selectedCategory === "All") {
         return this.history;
       } else {
-        return this.history.filter(item => item.name === this.selectedCategory);
+        return this.history.filter(
+          (item) => item.name === this.selectedCategory
+        );
       }
-    }
-  }
+    },
+  },
 };
 </script>
 
 <style>
+#main-container {
+  padding-top: 50px; /* Adjust this value based on the height of your navbar */
+  padding-left: 250px; /* Adjust this value based on the width of your sidebar */
+}
+
+/* Example media query for smaller screens */
+@media (max-width: 768px) {
   #main-container {
-    padding-top: 50px; /* Adjust this value based on the height of your navbar */
-    padding-left: 250px; /* Adjust this value based on the width of your sidebar */
+    padding-left: 100px; /* Smaller padding for smaller screens if the sidebar is also smaller */
   }
-
-  /* Example media query for smaller screens */
-  @media (max-width: 768px) {
-    #main-container {
-      padding-left: 100px; /* Smaller padding for smaller screens if the sidebar is also smaller */
-    }
-    .finances-header .col-md-6 {
+  .finances-header .col-md-6 {
     text-align: center; /* Center text for small screens */
-    }
-    .finances-header .col-md-6:first-child {
-      margin-bottom: 10px; /* Add space between the title and details on small screens */
-    }
   }
+  .finances-header .col-md-6:first-child {
+    margin-bottom: 10px; /* Add space between the title and details on small screens */
+  }
+}
 
-  .finances-header {
-  background: rgba(18, 52, 86, 0.0); /* Replace with the gradient you want */
+.finances-header {
+  background: rgba(18, 52, 86, 0); /* Replace with the gradient you want */
   padding: 10px 0; /* Add padding as necessary */
-  color: #FFFFFF; /* Replace with the color of your text */
-  }
+  color: #ffffff; /* Replace with the color of your text */
+}
 
-  .finances-header h1 {
-    margin: 0;
-    padding: 0;
-    font-size: 31px; /* Adjust font size as needed */
-  }
+.finances-header h1 {
+  margin: 0;
+  padding: 0;
+  font-size: 31px; /* Adjust font size as needed */
+}
 
-  .finances-details p {
-    margin: 0;
-    font-size: 16px; /* Adjust font size as needed */
-    line-height: 1.5; /* Adjust line height as needed */
-  }
+.finances-details p {
+  margin: 0;
+  font-size: 16px; /* Adjust font size as needed */
+  line-height: 1.5; /* Adjust line height as needed */
+}
 
-  .finances-details strong {
-    margin: 0;
-    font-size: 19px; /* Adjust font size as needed */
-    line-height: 1.5; /* Adjust line height as needed */
-  }
+.finances-details strong {
+  margin: 0;
+  font-size: 19px; /* Adjust font size as needed */
+  line-height: 1.5; /* Adjust line height as needed */
+}
 
-  .multiselect-col input[type="checkbox"] {
+.multiselect-col input[type="checkbox"] {
   margin-right: 10px; /* Spacing after checkbox */
-  }
+}
 
-  .multiselect-col div {
-    display: block;
-  }
+.multiselect-col div {
+  display: block;
+}
 
-  .multiselect-col input[type="checkbox"] {
-    vertical-align: middle;
-    margin-right: 0.5rem; /* Adjust spacing between checkbox and label as needed */
-    margin-left: 0.5rem;
-  }
+.multiselect-col input[type="checkbox"] {
+  vertical-align: middle;
+  margin-right: 0.5rem; /* Adjust spacing between checkbox and label as needed */
+  margin-left: 0.5rem;
+}
 
-  .multiselect-col label {
-    vertical-align: middle;
-  }
+.multiselect-col label {
+  vertical-align: middle;
+}
 
-  .history-list .col {
+.history-list .col {
   margin-right: -15px;
   padding-right: 0;
-  }
+}
 
-  .history-item + .history-item {
-    border-top: 1px solid #444; /* Or any color that suits your design */
-  }
+.history-item + .history-item {
+  border-top: 1px solid #444; /* Or any color that suits your design */
+}
 
-  .history-content {
-    display: flex;
-    justify-content: space-between;
-    padding: 10px 0;
-  }
+.history-content {
+  display: flex;
+  justify-content: space-between;
+  padding: 10px 0;
+}
 
-  .history-content > span {
+.history-content > span {
   flex: 1; /* Gives each span equal width */
   text-align: center; /* Centers text within each span */
-  }
+}
 
-  .history-content > span:first-child {
+.history-content > span:first-child {
   flex: 2; /* Makes the first child twice as wide as the others */
   text-align: left; /* Aligns the first child to the left */
-  }
+}
 
-  .history-content > span:last-child {
+.history-content > span:last-child {
   text-align: right; /* Aligns the last child to the right */
   flex: 1;
-  }
+}
 
-  .text-positive {
-    color: green;
-  }
+.text-positive {
+  color: green;
+}
 
-  .text-negative {
-    color: red;
-  }
+.text-negative {
+  color: red;
+}
 
-  .dropdown {
-    flex: 1;
-    display: inline-block; /* Ensures the dropdown is aligned correctly */
-  }
+.dropdown {
+  flex: 1;
+  display: inline-block; /* Ensures the dropdown is aligned correctly */
+}
 
-  .profile-pic {
-    object-fit: cover;
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    margin: 0px 15px 0px 15px;
-  }
+.profile-pic {
+  object-fit: cover;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  margin: 0px 15px 0px 15px;
+}
 
-  .channel-item {
+.channel-item {
   display: flex;
   align-items: center;
   justify-content: space-between; /* This will push the dot to the far right */
@@ -444,64 +527,63 @@ export default {
   background: #333; /* Dark background color */
   border-radius: 10px; /* Rounded corners for the items */
   margin-bottom: 5px; /* Space between items */
-  }
+}
 
-  .channels-list {
-    border: none; 
-    border-radius: 5px; 
-  }
+.channels-list {
+  border: none;
+  border-radius: 5px;
+}
 
-  .dot {
+.dot {
   height: 12px;
   width: 12px;
   border-radius: 50%;
   display: inline-block;
-  margin-right: 30px; 
-  }
+  margin-right: 30px;
+}
 
-  .channel-label {
+.channel-label {
   display: flex;
   align-items: center;
   flex-grow: 1;
-  }
+}
 
-  .channel-label > div {
-    display: flex;
-    flex-direction: column;
-    flex-grow: 1;
-    justify-content: center;
-  }
+.channel-label > div {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  justify-content: center;
+}
 
-  .subscribers {
+.subscribers {
   display: block; /* Make the subscribers display under the channel name */
   color: grey;
   font-size: smaller;
   margin-top: 2px;
-  }
+}
 
-  .button-container .btn-custom {
+.button-container .btn-custom {
   flex: 1; /* Each button will take up equal space */
   margin: 15px 5px; /* Spacing between buttons */
-  }
+}
 
-  .btn-custom {
-    width: auto; /* Make buttons wider */
-    background-color: transparent; /* Make buttons transparent */
-    color: white; /* Text color */
-    border: 1px solid white !important; /* White border */
-    margin: 5px 0; /* Margin for spacing */
-  }
+.btn-custom {
+  width: auto; /* Make buttons wider */
+  background-color: transparent; /* Make buttons transparent */
+  color: white; /* Text color */
+  border: 1px solid white !important; /* White border */
+  margin: 5px 0; /* Margin for spacing */
+}
 
-  .btn-custom:hover {
-    background-color: #F0F0F0; /* Grey background on hover */
-    color: #000000; /* Change text color as needed */
-  }
+.btn-custom:hover {
+  background-color: #f0f0f0; /* Grey background on hover */
+  color: #000000; /* Change text color as needed */
+}
 
-  /* Adjust the button container to make the buttons align nicely */
-  .d-flex.justify-content-center {
-    flex-direction: column; /* Stack buttons vertically */
-    align-items: stretch; /* Stretch buttons to fill the width */
-  }
-
+/* Adjust the button container to make the buttons align nicely */
+.d-flex.justify-content-center {
+  flex-direction: column; /* Stack buttons vertically */
+  align-items: stretch; /* Stretch buttons to fill the width */
+}
 </style>
 <style src="../../css/style.css"></style>

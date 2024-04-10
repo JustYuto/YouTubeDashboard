@@ -137,27 +137,30 @@ export default {
     },
 
     manualLogin() {
-      //temp
-      if (this.email && this.password) {
-        // Navigate to home-video page
-        this.$router.push("/video_HomePage");
-      } else {
-        // Handle invalid login attempt
-        alert("Please enter both email and password");
-      }
-      // Send email and password to your backend for authentication
       axios
-        .post("http://localhost:/auth/callback", {
+        .post("http://localhost:3000/login", {
           email: this.email,
           password: this.password,
         })
         .then((response) => {
-          // Handle successful login
-          this.userDetails = response.data;
-          this.$router.push("/video_HomePage");
+          if (response.data.success && response.data.userType === "Manager") {
+            console.log(response.data.id);
+            this.$store.commit("setUserId", response.data.id);
+            this.$router.push(response.data.redirectTo);
+          } else if (
+            response.data.success &&
+            response.data.userType === "YouTuber"
+          ) {
+            console.log("console.log(response.data.id);", response.data.id);
+            this.login();
+            this.$store.commit("setUserId", response.data.id);
+          } else {
+            alert(response.data.message);
+          }
         })
         .catch((error) => {
           console.error("Login error:", error);
+          alert("Login failed");
         });
     },
     login() {

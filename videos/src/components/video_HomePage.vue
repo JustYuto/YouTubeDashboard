@@ -20,7 +20,7 @@
       <nav class="nav">
         <div>
           <div class="nav_list">
-            <a href="#" class="nav_link active">
+            <a href="/homePage" class="nav_link active">
               <i class="bx bx-grid-alt nav_icon"></i>
               <span class="nav_name">Home</span>
             </a>
@@ -28,7 +28,7 @@
               <i class="bx bx-user nav_icon"></i>
               <span class="nav_name">Videos</span>
             </a>
-            <a href="#" @click.prevent="goToFinancePage" class="nav_link">
+            <a href="/finance_info" class="nav_link">
               <i class="bx bx-message-square-detail nav_icon"></i>
               <span class="nav_name">Finances</span>
             </a>
@@ -36,7 +36,7 @@
               <i class="bx bx-bookmark nav_icon"></i>
               <span class="nav_name">Settings</span>
             </a>
-            <a href="#" class="nav_link">
+            <a href="/backOfficePage" class="nav_link">
               <i class="bx bx-folder nav_icon"></i>
               <span class="nav_name">Partner Deals</span>
             </a>
@@ -165,6 +165,14 @@ export default {
       videos: [],
       currentPage: 1,
       videosPerPage: 6,
+      props: ["activeTab"],
+      watch: {
+        activeTab(newVal, oldVal) {
+          if (newVal === "Search" && newVal !== oldVal) {
+            this.fetchVideos();
+          }
+        },
+      },
     };
   },
   // mounted() {
@@ -193,13 +201,24 @@ export default {
       return this.filteredVideos.slice(start, end);
     },
   },
+  watch: {
+    videos(newVideos) {
+      console.log("Videos updated in component", newVideos);
+    },
+  },
   mounted() {
-    this.fetchVideos();
+    console.log("video_HomePage has been mounted");
+    console.log("Current store videos:", this.$store.state.videos);
+
+    if (!this.videos || this.videos.length === 0) {
+      this.fetchVideos();
+    }
   },
   methods: {
     fetchVideos() {
       this.videos = this.$store.state.videos;
       this.filteredVideos = this.videos;
+      console.log(this.videos);
     },
     changeTab(tabName) {
       this.currentTab = tabName;
