@@ -116,7 +116,7 @@
     <div class="row">
       <!-- This Month Earnings Column -->
       <div class="col-md-6">
-        <h3>Monthly Earnings Breakdown</h3>
+        <h3>Earnings Breakdown</h3>
         <p>Total: ${{ totalEarnings }}</p>
         <canvas ref="monthlyEarningsChart" id="monthlyEarningsChart" width="400" height="200"></canvas>
         <p>Percentage increase: {{ percentageIncrease }}%</p>
@@ -193,8 +193,8 @@
 
 <script>
 import { mapState } from 'vuex';
-import { Chart, LineController, LineElement, PointElement, LinearScale, CategoryScale } from 'chart.js';
-Chart.register(LineController, LineElement, PointElement, LinearScale, CategoryScale);
+import { Chart, LineController, LineElement, PointElement, LinearScale, CategoryScale, Tooltip } from 'chart.js';
+Chart.register(LineController, LineElement, PointElement, LinearScale, CategoryScale, Tooltip);
 //import 'vue-datepicker-ui/lib/vuedatepickerui.css';
 //import VueDatepickerUi from 'vue-datepicker-ui';
 //import { createPopper } from '@popperjs/core';
@@ -328,10 +328,31 @@ export default {
               data: this.earningsData[channel.name],
               borderColor: channel.color,
               backgroundColor: this.getTransparentColor(channel.color),
-              borderWidth: 2
+              borderWidth: 2,
+              pointHoverRadius: 10,
+              pointHoverBackgroundColor: channel.color,
             };
           })
+        },
+        options: {
+        plugins: {
+          tooltip: {
+            enabled: true, // Enable tooltips
+            mode: 'index', // Show tooltips for all items in the index
+            intersect: false, // Show tooltips even without hovering directly over an item
+            callbacks: {
+              label: function(context) {
+                let label = context.dataset.label || '';
+                if (label) {
+                  label += ': $';
+                }
+                label += context.parsed.y.toLocaleString();
+                return label;
+              }
+            }
+          }
         }
+      }        
       });
     },
     getRandomColor() {
@@ -360,7 +381,9 @@ export default {
           label: header.name,
           data: this.analyticsData.rows.map(row => row[index + 1]),
           borderColor: this.colors[index % this.colors.length],
-          fill: false, // Ensure the area under the line isn't filled
+          fill: true, // Ensure the area under the line isn't filled
+          pointHoverRadius: 10,
+          pointHoverBackgroundColor: this.colors[index % this.colors.length]
         };
       });
 
@@ -372,11 +395,29 @@ export default {
         type: 'line',
         data: { labels, datasets },
         options: {
-          scales: {
-            y: { beginAtZero: true }
+          plugins: {
+            tooltip: {
+              enabled: true, // Ensures tooltips are enabled
+              callbacks: {
+                label: function(context) {
+                  // Assuming the value you want to format is in context.parsed.y
+                  let label = context.dataset.label || '';
+                  if (label) {
+                    label += ': $';
+                  }
+                  label += context.parsed.y.toLocaleString(); // This will convert the number to a string with commas as thousands separators
+                  return label;
+                }
+              }
+            }
+          },
+        scales: {
+          y: {
+            beginAtZero: true
           }
         }
-      });
+      }
+    });
     
   },
 },
