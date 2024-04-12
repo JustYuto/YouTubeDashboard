@@ -8,9 +8,15 @@ import FinanceInfo from "./components/finance_info.vue";
 import signUp_page from "./components/signUp_page.vue";
 import backOfficePage from "./components/backOfficePage.vue";
 import homePage from "./components/homePage.vue";
+import search from "./components/search.vue";
 import { Chart } from 'chart.js';
 import vue3GoogleLogin from 'vue3-google-login'
 import store from './store/index';
+import BootstrapVue3 from 'bootstrap-vue-3'
+
+import 'bootstrap-vue-3/dist/bootstrap-vue-3.css'
+
+
 // import VueYoutubeEmbed from "vue-youtube-embed";
 
 const routes = [
@@ -22,7 +28,7 @@ const routes = [
   { path: "/signUp_page", name: "signUp_page", component: signUp_page },
   { path: "/backOfficePage", name: "backOfficePage", component: backOfficePage },
   { path: "/homePage", name: "homePage", component: homePage },
-
+  { path: "/search", name: "search", component: search },
 ];
 
 const router = createRouter({
@@ -35,6 +41,7 @@ const app = createApp(App);
 
 app.use(router);
 app.use(store);
+app.use(BootstrapVue3);
 // app.use(VueYoutubeEmbed);
 app.use(vue3GoogleLogin, {
   clientId:

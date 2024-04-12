@@ -64,6 +64,22 @@ app.post('/login', (req, res) => {
 //3. Use backend Google api to verify the code or token.
 //4. If verified, sign them in the backend and then send a response to frontend
 
+async function getVideoStatistics(videoIds, accessToken) {
+  try {
+    const response = await axios.get("https://www.googleapis.com/youtube/v3/videos", {
+      params: {
+        part: 'statistics',
+        id: videoIds.join(','), // 複数のビデオIDをカンマ区切りの文字列で指定
+        access_token: accessToken,
+      }
+    });
+    return response.data.items; // 各ビデオの統計情報を含む配列を返す
+  } catch (error) {
+    console.error("Error fetching video statistics:", error);
+    return [];
+  }
+}
+
 app.post("/auth/callback", async (req, res) => {
   try {
     // get the code from frontend, send Google api to verify the code
@@ -94,15 +110,20 @@ app.post("/auth/callback", async (req, res) => {
       console.log("YouTube Channel Response:", youtubeResponse.data);
       const uploadsPlaylistId = youtubeResponse.data.items[0].contentDetails.relatedPlaylists.uploads;
 
+
+
       const videosResponse = await axios.get("https://www.googleapis.com/youtube/v3/playlistItems", {
           params: {
               part: 'snippet,contentDetails',
               playlistId: uploadsPlaylistId,
               maxResults: 25, 
               access_token: accessToken,
-          }
+          } 
       });
       console.log("YouTube Videos Response:", videosResponse.data); 
+      const videoIds = videosResponse.data.items.map(item => item.contentDetails.videoId);
+      const videoStatistics = await getVideoStatistics(videoIds, accessToken);
+      console.log("Video statistics:", videoStatistics);
       savedVideos = videosResponse.data;
 
     // Fetch user details using the access token
@@ -120,6 +141,7 @@ app.post("/auth/callback", async (req, res) => {
     const responsePayload = {
       accessToken: accessToken,
       videos: videosResponse.data,
+      videoStatistics: videoStatistics, 
       user: userDetails,
       message: "Authentication successful"
     };
@@ -153,10 +175,17 @@ app.get("/api/report", (req, res) => {
 
     // Loop over savedVideos to add each to the CSV string
     savedVideos.items.forEach((item) => {
-      const videoTitle = item.snippet.title.replace(/,/g, ""); // Remove commas to avoid CSV issues
+      const videoTitle = item.snippet.title.replace(/,/g, "");
       const videoId = item.snippet.resourceId.videoId;
       const videoUrl = `https://www.youtube.com/watch?v=${videoId}`;
-      csvContent += `${videoTitle},${videoId},${videoUrl}\n`; // Add video data to CSV string
+      const publishedAt = item.snippet.publishedAt; 
+      const viewCount = item.statistics.viewCount; 
+      const likeCount = item.statistics.likeCount; 
+      const dislikeCount = item.statistics.dislikeCount; 
+      const commentCount = item.statistics.commentCount;
+
+      
+      csvContent += `${videoTitle},${videoId},${videoUrl},${publishedAt},${viewCount},${likeCount},${dislikeCount},${commentCount}\n`;
     });
 
     // Define the path and filename for the CSV file

@@ -236,7 +236,9 @@
             <div class="ml-2">
               <h3 class="section-title">{{ videoDetails.title }}</h3>
               <p>
-                0 views・{{ new Date(videoDetails.date).toLocaleDateString() }}
+                {{ videoDetails.viewCount }}・{{
+                  new Date(videoDetails.date).toLocaleDateString()
+                }}
               </p>
               <div class="d-flex align-items-center">
                 <img
@@ -315,6 +317,7 @@ export default {
         channelTitle: "",
         channelId: "",
         date: "",
+        viewCount: "",
       },
       channelProfileUrl: "",
       isTagVolumeTooShort: false,
@@ -331,6 +334,7 @@ export default {
       channelTitle,
       channelId,
       date,
+      viewCount,
     } = this.$route.query;
     this.videoDetails = {
       title,
@@ -340,6 +344,7 @@ export default {
       channelTitle,
       channelId,
       date,
+      viewCount,
     };
 
     this.getChannelProfileUrl();
