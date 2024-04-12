@@ -46,13 +46,13 @@
         <div class="form-check">
           <div class="row">
             <div class="col-sm-5">
-              <input type="checkbox" class="float-left" id="rememberMe" />
-              <label for="rememberMe float-left">Remember me</label>
+              <input type="checkbox" id="rememberMe" />
+              <label for="rememberMe">Remember me</label>
             </div>
             <a
               href="#"
               @click="login"
-              class="float-right col-sm-5"
+              class="float-right col-sm-6"
               style="text-align: right; padding-right: 10px"
               >Forgot password?</a
             >
@@ -60,38 +60,42 @@
         </div>
 
         <!-- Login and Google Login Buttons -->
-        <div class="row">
-          <button
-            @click="manualLogin"
-            class="btn btn-primary col-sm-5 float-left"
-          >
-            Login
-          </button>
-          <br />
+        <div class="container">
+          <div class="row">
+            <button @click="manualLogin" class="col-sm-5 btn btn-primary">
+              Login
+            </button>
 
-          <button @click="login" class="btn btn-secondary col-sm-5 float-right">
-            Login Using Google
-          </button>
-          <vue3-google-login
-            v-on:googleLoginSuccess="onGoogleAuthSuccess"
-            v-on:googleLoginFailure="onGoogleAuthFail"
-          >
-          </vue3-google-login>
-          <!--from back end-->
-          <div v-if="userDetails">
-            <h2>User Details</h2>
-            <p>Name: {{ userDetails.name }}</p>
-            <p>Email: {{ userDetails.email }}</p>
-            <p>
-              Profile Picture:
-              <img :src="userDetails.picture" alt="Profile Picture" />
-            </p>
+            <button
+              @click="login"
+              class="col-sm-5 btn btn-secondary"
+              style="margin-right: -28px"
+            >
+              Google Login
+            </button>
+            <!--
+            <vue3-google-login
+              v-on:googleLoginSuccess="onGoogleAuthSuccess"
+              v-on:googleLoginFailure="onGoogleAuthFail"
+            >
+            </vue3-google-login>
+            -->
+            <!--from back end-->
+            <div v-if="userDetails">
+              <h2>User Details</h2>
+              <p>Name: {{ userDetails.name }}</p>
+              <p>Email: {{ userDetails.email }}</p>
+              <p>
+                Profile Picture:
+                <img :src="userDetails.picture" alt="Profile Picture" />
+              </p>
+            </div>
           </div>
         </div>
 
         <!-- Sign Up Link -->
         <p class="text-center" style="padding-top: 10px">
-          No account? <a href="#" @click="signUp">Sign up</a>
+          No account? <a href="#" @click="login">Sign up</a>
         </p>
       </div>
     </div>
@@ -144,6 +148,7 @@ export default {
         })
         .then((response) => {
           if (response.data.success && response.data.userType === "Manager") {
+            // this.login();
             console.log(response.data.id);
             this.$store.commit("setUserId", response.data.id);
             this.$router.push(response.data.redirectTo);
@@ -199,10 +204,23 @@ export default {
           { headers }
         );
         console.log("Response", response);
-        //this.userDetails = response.data;
-        this.videos = response.data.videos.items;
-        console.log("YouTube videos data:", this.videos);
-        this.$store.commit("setVideos", this.videos);
+
+        const videos = response.data.videos.items;
+        const videoStatistics = response.data.videoStatistics;
+        console.log("YouTube video statistics:", videoStatistics);
+        console.log("YouTube videos data:", videos);
+
+        const videosWithStats = videos.map((video) => {
+          const videoStat = videoStatistics.find(
+            (stat) => stat.id === video.contentDetails.videoId
+          );
+          if (videoStat) {
+            video.statistics = videoStat.statistics;
+          }
+          return video;
+        });
+
+        this.$store.commit("setVideos", videosWithStats);
         console.log("Current videos in store:", this.$store.state.videos);
 
         const userDetails = response.data;

@@ -20,7 +20,7 @@
       <nav class="nav">
         <div>
           <div class="nav_list">
-            <a href="#" class="nav_link active">
+            <a href="/backOfficePage" class="nav_link active">
               <i class="bx bx-grid-alt nav_icon"></i>
               <span class="nav_name">Home</span>
             </a>
@@ -45,9 +45,9 @@
               <a
                 class="nav-link"
                 href="#"
-                :class="{ active: activeTab === 'Channel Analytics' }"
-                @click.prevent="setActiveTab('Channel Analytics')"
-                >Channel Analytics</a
+                :class="{ active: activeTab === 'Retention Analytics' }"
+                @click.prevent="setActiveTab('Retention Analytics')"
+                >Retention Analytics</a
               >
             </li>
             <li class="nav-item">
@@ -63,33 +63,51 @@
         </div>
       </div>
     </nav>
-    <div v-if="activeTab === 'Channel Analytics'">
-      <button @click="downloadReport" class="btn btn-primary">
-        Download Report
-      </button>
-    </div>
-    <div class="container"></div>
-    <div v-if="activeTab === 'Search'">
-      <VideoHomePage ref="videoHomePage" />
+
+    <component :is="currentComponent"></component>
+  </div>
+  <div class="container" v-if="activeTab === 'Retention Analytics'">
+    <h2>Managed YouTube Channels</h2>
+    <div class="row">
+      <div class="col-md-6" v-for="(channel, index) in channels" :key="index">
+        <div class="card mb-3">
+          <div class="card-body">
+            <h5 class="cardTitle">{{ channel.name }}</h5>
+            <h6 class="card-subtitle mb-2 text-muted">
+              Channel ID: {{ channel.channelId }}
+            </h6>
+            <p class="card-text mb-2 text-muted">
+              Start since {{ channel.startDate }}
+            </p>
+            <p class="card-text mb-2 text-muted">
+              Subscribers: {{ channel.subscribers }}
+            </p>
+            <p class="card-text mb-2 text-muted">
+              Total views: {{ channel.views }}
+            </p>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
-  <div class="container">
-    <h2>Cancellation Requests</h2>
-    <table>
+  <div class="container" v-if="activeTab === 'Retention Analytics'">
+    <h2>Unlink Requests</h2>
+    <table class="table">
       <thead>
         <tr>
-          <th>ID</th>
+          <th>Email</th>
           <th>User ID</th>
           <th>Status</th>
-          <th>Created At</th>
+          <th @click="sortRequestsByDate">Created At ▼</th>
+          <th>Actions</th>
         </tr>
       </thead>
       <tbody>
         <tr v-for="request in cancellationRequests" :key="request.id">
-          <td>{{ request.id }}</td>
+          <td>test@gmail.com</td>
           <td>{{ request.user_id }}</td>
           <td>{{ request.status }}</td>
-          <td>{{ request.created_at }}</td>
+          <td>{{ new Date(request.created_at).toLocaleDateString() }}</td>
           <td>
             <button @click="updateStatus(request.id, 'accepted')">
               Accept
@@ -101,22 +119,37 @@
         </tr>
       </tbody>
     </table>
+    <div v-if="activeTab === 'Retention Analytics'">
+      <button @click="downloadReport" class="btn btn-primary">
+        Download Report
+      </button>
+    </div>
+    <br /><br /><br /><br />
+    <br /><br /><br /><br />
   </div>
 </template>
   
 <script>
-import VideoHomePage from "./video_HomePage.vue";
+import Search from "./search.vue";
 import axios from "axios";
 
 export default {
   components: {
-    VideoHomePage,
+    Search,
   },
   data() {
     return {
-      activeTab: "Channel Analytics", // Set the default active tab
-      channels: [],
+      activeTab: "Retention Analytics", // Set the default active tab
       cancellationRequests: [],
+      channels: [
+        {
+          name: "Playground Asia Family",
+          channelId: "UCETlyq6M0vMRF9IOGOUEsyA",
+          startDate: "1/1/2024",
+          subscribers: "383,000", // Dummy data
+          views: "5,238,708", // Dummy data
+        },
+      ],
     };
   },
   methods: {
@@ -184,10 +217,27 @@ export default {
           console.error("Error updating status:", error);
         });
     },
+    sortRequestsByDate() {
+      this.cancellationRequests.sort(
+        (a, b) => new Date(b.created_at) - new Date(a.created_at)
+      );
+    },
   },
   created() {
     this.fetchChannels();
     this.fetchCancellationRequests();
+  },
+  computed: {
+    currentComponent() {
+      switch (this.activeTab) {
+        case "Retention Analytics":
+          return null;
+        case "Search":
+          return "Search";
+        default:
+          return null;
+      }
+    },
   },
 };
 </script>
@@ -196,5 +246,8 @@ export default {
   
   
   <style>
+.cardTitle {
+  color: #007bff; /* Bootstrap primary color */
+}
 </style>
   <style src="../../css/style.css"></style>

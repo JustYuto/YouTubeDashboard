@@ -1,4 +1,4 @@
-<template>
+  <template>
   <head>
     <!-- Required meta tags -->
     <meta charset="utf-8" />
@@ -20,33 +20,9 @@
       <nav class="nav">
         <div>
           <div class="nav_list">
-            <a href="/homePage" class="nav_link active">
+            <a href="/backOfficePage" class="nav_link active">
               <i class="bx bx-grid-alt nav_icon"></i>
               <span class="nav_name">Home</span>
-            </a>
-            <a href="#" class="nav_link">
-              <i class="bx bx-user nav_icon"></i>
-              <span class="nav_name">Videos</span>
-            </a>
-            <a href="/finance_info" class="nav_link">
-              <i class="bx bx-message-square-detail nav_icon"></i>
-              <span class="nav_name">Finances</span>
-            </a>
-            <a href="#" class="nav_link">
-              <i class="bx bx-bookmark nav_icon"></i>
-              <span class="nav_name">Settings</span>
-            </a>
-            <a href="/backOfficePage" class="nav_link">
-              <i class="bx bx-folder nav_icon"></i>
-              <span class="nav_name">Partner Deals</span>
-            </a>
-            <a href="#" class="nav_link">
-              <i class="bx bx-bar-chart-alt-2 nav_icon"></i>
-              <span class="nav_name">Assets</span>
-            </a>
-            <a href="#" class="nav_link">
-              <i class="bx bx-bar-chart-alt-2 nav_icon"></i>
-              <span class="nav_name">Comments</span>
             </a>
             <a href="/user_login" class="nav_link">
               <i class="bx bx-bar-chart-alt-2 nav_icon"></i>
@@ -74,21 +50,17 @@
               aria-label="Search"
             />
           </form>
-          <ul class="navbar-nav ml-auto">
-            <li class="nav-item">
-              <a class="nav-link" href="#" @click.prevent="changeTab('To Fix')"
-                >To Fix</a
-              >
-            </li>
-            <li class="nav-item">
-              <a
-                class="nav-link"
-                href="#"
-                @click.prevent="changeTab('All Videos')"
-                >All Videos</a
-              >
-            </li>
-          </ul>
+          <select
+            v-model="selectedSort"
+            class="custom-select"
+            style="max-width: 200px"
+          >
+            <option value="">Sort by...</option>
+            <option value="viewCount">Views</option>
+            <option value="likes">Likes</option>
+            <option value="dislikes">Dislikes</option>
+            <option value="date">Date</option>
+          </select>
         </div>
       </div>
     </nav>
@@ -155,10 +127,14 @@
     </div>
     <br /><br /><br /><br />
     <br /><br /><br /><br />
+    <br /><br /><br /><br />
+    <br /><br /><br /><br />
   </div>
+  <br /><br /><br /><br />
+  <br /><br /><br /><br />
 </template>
 
-<script>
+  <script>
 import { mapState } from "vuex";
 
 export default {
@@ -178,6 +154,8 @@ export default {
           }
         },
       },
+      isDropdownOpen: false,
+      selectedSort: "",
     };
   },
   // mounted() {
@@ -207,8 +185,9 @@ export default {
     },
   },
   watch: {
-    videos(newVideos) {
-      console.log("Videos updated in component", newVideos);
+    // selectedSort が変更されたときにフィルタリングされた動画を更新
+    selectedSort() {
+      this.sortVideos();
     },
   },
   mounted() {
@@ -239,11 +218,34 @@ export default {
         this.currentPage--;
       }
     },
+    sortVideos() {
+      if (this.selectedSort === "viewCount") {
+        this.videos.sort(
+          (a, b) => b.statistics.viewCount - a.statistics.viewCount
+        );
+      } else if (this.selectedSort === "likes") {
+        this.videos.sort(
+          (a, b) => b.statistics.likeCount - a.statistics.likeCount
+        );
+      } else if (this.selectedSort === "dislikes") {
+        this.videos.sort(
+          (a, b) => b.statistics.dislikeCount - a.statistics.dislikeCount
+        );
+      } else if (this.selectedSort === "date") {
+        this.videos.sort(
+          (a, b) =>
+            new Date(b.snippet.publishedAt) - new Date(a.snippet.publishedAt)
+        );
+      }
+    },
+    toggleDropdown() {
+      this.isDropdownOpen = !this.isDropdownOpen;
+    },
   },
 };
 </script>
 
 
-<style>
+  <style>
 </style>
-<style src="../../css/style.css"></style>
+  <style src="../../css/style.css"></style>
