@@ -1,6 +1,6 @@
 const { oauth2Client } = require("../config");
 const User = require('../models/User');
-
+const frontendUrl = 'http://localhost:8080';
 const {
   getAccessToken,
   getGoogleUser,
@@ -16,6 +16,7 @@ exports.initiateAuth = (req, res) => {
   ];
   const authUrl = oauth2Client.generateAuthUrl({
     access_type: "offline",
+    response_type: 'code',
     scope: scopes,
   });
   res.redirect(authUrl);
@@ -26,6 +27,7 @@ exports.handleAuthCallback = async (req, res) => {
     try {
       const tokens = await getAccessToken(code);
       const googleProfile = await getGoogleUser(tokens);
+      
       console.log(googleProfile)
   
       // Check if user already exists
@@ -41,6 +43,7 @@ exports.handleAuthCallback = async (req, res) => {
               gender: '', // Placeholder, as gender is not available from Google OAuth
               birthday: null, // Placeholder, as birthday is not available from Google OAuth
               location: '', // Placeholder, as location is not directly available from Google OAuth
+              picture: googleProfile.picture
             },
             socialProfiles: {
               tikTok: '', // Placeholder, as this is not available from Google OAuth
@@ -60,10 +63,15 @@ exports.handleAuthCallback = async (req, res) => {
 
       req.session.userId = user._id; // Or any other user identifier or necessary data
       req.session.tokens = tokens; // Optionally save tokens if needed for subsequent API calls
+
   
       // At this point, the user is either fetched or newly created
       // Proceed with your login or token generation logic
-      res.status(200).json({ message: "User authenticated", user });
+
+      const userToken = tokens.id_token; // Assume you generate or receive a token
+
+      res.redirect(`${frontendUrl}/auth/callback?token=${userToken}&code=${code}`);
+      // res.status(200).json({ message: "User authenticated", user });
     } catch (error) {
       console.error("Authentication failed:", error);
       res.status(500).json({ message: "Authentication failed" });
@@ -71,9 +79,18 @@ exports.handleAuthCallback = async (req, res) => {
   };
 
   exports.isLoggedIn = (req, res, next) => {
-    if (req.session.userId) {
+    if (req.session && req.session.userId) {
       next();
     } else {
       res.status(401).json({ message: "Unauthorized" });
     }
+  };
+
+  exports.logout = (req, res) => {
+    req.session.destroy(err => {
+      if (err) {
+        return res.status(500).json({ message: "Could not log out, please try again" });
+      }
+      res.status(200).json({ message: "User logged out" });
+    });
   };

@@ -5,11 +5,18 @@ const authRoutes = require('./routes/authRoutes');
 const youtubeRoutes = require('./routes/youtubeRoutes');
 const profileRoutes = require('./routes/profileRoutes');
 const calendarRoutes = require('./routes/calendarRoutes');
+const sessionRoutes = require('./routes/sessionRoutes');
 const connectDB = require('./config/db')
 const app = express();
 const port = 3000;
-
-app.use(cors());
+app.use(cors(
+  {
+    origin: 'http://localhost:8080', // Adjust according to your frontend host
+    credentials: true,
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'],  // Adjust based on your needs
+    allowedHeaders: ['Content-Type', 'Authorization']
+}
+));
 app.use(express.json());
 connectDB();
 app.use(session({
@@ -23,6 +30,7 @@ app.use('/auth/google', authRoutes);
 app.use('/api/youtube', youtubeRoutes);
 app.use('/api/profile', profileRoutes);
 app.use('/api/calendar', calendarRoutes);
+app.use('/api', sessionRoutes);
 
 app.listen(port, () => {
   console.log(`Server running on port ${port}`);

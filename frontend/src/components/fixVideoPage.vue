@@ -498,5 +498,5 @@ export default {
   margin-right: 20px;
 }
 </style>
-  
-<style src="../assets/css/style.css"></style>
+<!--   
+<style src="../assets/css/style.css"></style> -->

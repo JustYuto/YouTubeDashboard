@@ -9,9 +9,10 @@ const userSchema = new mongoose.Schema({
         gender: String,
         birthday: Date,
         location: String,
+        picture: String,
     },
     socialProfiles: {
-        tikTok: String,
+        tiktok: String,
         facebook: String,
         instagram: String,
         twitter: String,

@@ -1,4 +1,5 @@
 const profileService = require('../services/profileService');
+const User = require('../models/User');
 
 exports.updatePersonalData = async (req, res) => {
     try {
@@ -35,3 +36,16 @@ exports.updateYoutubeChannels = async (req, res) => {
         res.status(500).send('Error updating YouTube channels');
     }
 };
+
+exports.getProfile = async (req, res) => {
+    try {
+        console.log(req.session.userId)
+      const user = await User.findById(req.session.userId);
+      if (!user) {
+        return res.status(404).json({ message: "User not found" });
+      }
+      res.json({ user: user }); // Adjust according to your user model
+    } catch (error) {
+      res.status(500).json({ message: "Server error" });
+    }
+  };

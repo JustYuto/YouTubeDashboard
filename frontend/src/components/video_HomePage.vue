@@ -185,4 +185,4 @@ export default {
 
 <style>
 </style>
-<style src="../assets/css/style.css"></style>
+<!-- <style src="../assets/css/style.css"></style> -->

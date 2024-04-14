@@ -1,43 +1,43 @@
 <template>
   <div
-    class="w-auto h-auto collapse navbar-collapse max-height-vh-100 h-100"
+    class="w-auto collapse navbar-collapse max-height-vh-100"
     id="sidenav-collapse-main"
   >
     <ul class="navbar-nav">
-      <li class="nav-item">
+      <li class="nav-item" :class="{ 'active': $route.name === 'Dashboard' }">
         <sidenav-collapse navText="Home" :to="{ name: 'Dashboard' }">
           <template #icon>
             <shop />
           </template>
         </sidenav-collapse>
       </li>
-      <li class="nav-item">
-        <sidenav-collapse navText="Videos" :to="{ name: '/' }">
+      <li class="nav-item" :class="{ 'active': $route.name === 'Videos' }">
+        <sidenav-collapse navText="Videos" :to="{ name: 'Videos' }">
           <template #icon>
             <office />
           </template>
         </sidenav-collapse>
       </li>
-      <li class="nav-item">
-        <sidenav-collapse navText="Finances" :to="{ name: '/' }">
+      <li class="nav-item" :class="{ 'active': $route.name === 'Finances' }">
+        <sidenav-collapse navText="Finances" :to="{ name: 'Finances' }">
           <template #icon>
             <credit-card />
           </template>
         </sidenav-collapse>
       </li>
 
-      <li class="nav-item">
+      <li class="nav-item" :class="{ 'active': $route.name === 'Settings' }">
         <sidenav-collapse
           navText="Settings"
-          :to="{ name: '/' }"
+          :to="{ name: 'Settings' }"
         >
           <template #icon>
             <box3d />
           </template>
         </sidenav-collapse>
       </li>
-      <li class="nav-item">
-        <sidenav-collapse navText="Partner Deals" :to="{ name: '/' }">
+      <li class="nav-item" :class="{ 'active': $route.name === 'Deals' }">
+        <sidenav-collapse navText="Partner Deals" :to="{ name: 'Deals' }">
           <template #icon>
             <settings />
           </template>
@@ -51,15 +51,15 @@
           PAGES
         </h6>
       </li> -->
-      <li class="nav-item">
-        <sidenav-collapse navText="Assets" :to="{ name: '/' }">
+      <li class="nav-item" :class="{ 'active': $route.name === 'Assets' }">
+        <sidenav-collapse navText="Assets" :to="{ name: 'Assets' }">
           <template #icon>
             <customer-support />
           </template>
         </sidenav-collapse>
       </li>
-      <li class="nav-item">
-        <sidenav-collapse navText="Comments" :to="{ name: '/' }">
+      <li class="nav-item" :class="{ 'active': $route.name === 'Comments' }">
+        <sidenav-collapse navText="Comments" :to="{ name: 'Comments' }">
           <template #icon>
             <document />
           </template>
@@ -75,20 +75,33 @@
     </ul>
   </div>
   <!-- <div class="pt-3 mx-3 mt-3 sidenav-footer">
-    <sidenav-card
-      :class="cardBg"
-      textPrimary="Need Help?"
-      textSecondary="Please check our docs"
-      route="https://www.creative-tim.com/learning-lab/vue/overview/soft-ui-dashboard/"
-      label="Documentation"
-      icon="ni ni-diamond"
-    />
-    <a
-      class="btn bg-gradient-success mt-4 w-100"
-      href="https://www.creative-tim.com/product/vue-soft-ui-dashboard-pro?ref=vsud"
-      type="button"
-      >Upgrade to pro</a
-    >
+    <div class="nav-item d-flex align-items-center">
+            <router-link
+              :to="{ name: '/' }"
+              class="px-0 nav-link font-weight-bold"
+              :class="textWhite ? textWhite : 'text-body'"
+            >
+              
+              <div v-if="this.$store.state.isAuthenticated" class="d-flex flex-column gap-2 align-items-center"
+                >
+            
+                <soft-avatar
+                      :img="`${ this.$store.state.user.personalData.picture}`"
+                      size="sm"
+                      border-radius="lg"
+                      alt="user1"
+                    />
+{{ this.$store.state.user.personalData.firstName }}
+                </div
+              >
+              <span v-else class="d-sm-inline d-none">
+                <i
+                class="fa fa-user"
+                :class="this.$store.state.isAuthenticated ? 'ms-sm-2' : 'me-sm-1'"
+              ></i>
+              Sign In</span>
+            </router-link>
+          </div>
   </div> -->
 </template>
 <script>
@@ -102,6 +115,7 @@ import CustomerSupport from "../../components/Icon/CustomerSupport.vue";
 import Document from "../../components/Icon/Document.vue";
 // import Spaceship from "../../components/Icon/Spaceship.vue";
 import Settings from "../../components/Icon/Settings.vue";
+// import SoftAvatar from "@/components/SoftAvatar.vue";
 
 export default {
   name: "SidenavList",
@@ -126,6 +140,7 @@ export default {
     Document,
     // Spaceship,
     Settings,
+    // SoftAvatar,
   },
   methods: {
     getRoute() {
@@ -144,5 +159,17 @@ export default {
 
 li.nav-item {
   margin: 0;
+}
+
+.nav-link.active {
+  border: none;
+}
+
+.active {
+  border-right: 2px solid white;
+}
+
+.navbar-vertical.navbar-expand-xs .navbar-collapse {
+  height: calc(100vh - 260px) !important;
 }
 </style>

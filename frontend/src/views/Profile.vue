@@ -93,7 +93,7 @@
                     <div class="card">
                       <img class="card-img-top" src="/youtubedashboard/src/assets/logo.png" alt="Channel Name">
                       <div class="card-body">
-                        <h5 class="card-title">Marques Brownlee</h5>
+                        <h5 class="card-title">{{ this.$store.state.youtubeChannels.snippet.description }}</h5>
                         <p class="card-text">9M Subscriptions</p>
                         <a href="#" class="btn btn-primary">Linked</a>
                       </div>

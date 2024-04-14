@@ -17,12 +17,13 @@
         <div :class="classContent">
           <div class="numbers">
             <p
-              class="mb-0 text-sm text-capitalize font-weight-bold"
+              class="mb-0 text-sm text-capitalize font-weight-bold greey"
               :class="title.color"
             >
               {{ typeof title === "string" ? title : title.text }}
             </p>
             <h5 class="mb-0 font-weight-bolder text-4xl" :class="value.color">
+              <span v-if="value.dollar"><sup>$</sup></span>
               {{
                 typeof value === "string" || typeof value === "number"
                   ? value
@@ -80,6 +81,9 @@ export default {
       color: {
         type: String,
       },
+      dollar: {
+        type: Boolean,
+      }
     },
     percentage: {
       type: [Object, String],
@@ -117,3 +121,10 @@ export default {
   },
 };
 </script>
+
+<style>
+
+.greey {
+  color: hsl(0deg 0.73% 49.94%) !important;
+}
+</style>

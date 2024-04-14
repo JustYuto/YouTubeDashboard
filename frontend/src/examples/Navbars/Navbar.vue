@@ -8,13 +8,13 @@
     <div class="px-3 py-1 container-fluid">
       <breadcrumbs :currentPage="currentRouteName" :textWhite="textWhite" />
       <div
-        class="mt-2 collapse navbar-collapse mt-sm-0 me-md-0 me-sm-4"
-        :class="this.$store.state.isRTL ? 'px-0' : 'me-sm-4'"
+        class="mt-2 collapse navbar-collapse mt-sm-0 me-md-0 "
+        :class="this.$store.state.isAuthenticated ? 'px-0' : ''"
         id="navbar"
       >
         <div
           class="pe-md-3 d-flex align-items-center"
-          :class="this.$store.state.isRTL ? 'me-md-auto' : 'ms-md-auto'"
+          :class="this.$store.state.isAuthenticated ? 'me-md-auto' : 'ms-md-auto'"
         >
           <!-- <div class="input-group">
             <span class="input-group-text text-body"
@@ -36,29 +36,27 @@
               class="px-0 nav-link font-weight-bold"
               :class="textWhite ? textWhite : 'text-body'"
             >
-              <i
-                class="fa fa-user"
-                :class="this.$store.state.isRTL ? 'ms-sm-2' : 'me-sm-1'"
-              ></i>
-              <span v-if="this.$store.state.isRTL" class="d-sm-inline d-none"
-                >يسجل دخول</span
+              
+              <div v-if="this.$store.state.isAuthenticated" class="d-flex align-items-center"
+                >
+            
+                <soft-avatar
+                      :img="`${ this.$store.state.user.personalData.picture}`"
+                      size="sm"
+                      border-radius="lg"
+                      class="me-3"
+                      alt="user1"
+                    />
+{{ this.$store.state.user.personalData.firstName }}
+                </div
               >
-              <span v-else class="d-sm-inline d-none">Sign In </span>
+              <span v-else class="d-sm-inline d-none">
+                <i
+                class="fa fa-user"
+                :class="this.$store.state.isAuthenticated ? 'ms-sm-2' : 'me-sm-1'"
+              ></i>
+              Sign In</span>
             </router-link>
-          </li>
-          <li class="nav-item d-xl-none ps-3 d-flex align-items-center">
-            <a
-              href="#"
-              @click="toggleSidebar"
-              class="p-0 nav-link text-body"
-              id="iconNavbarSidenav"
-            >
-              <div class="sidenav-toggler-inner">
-                <i class="sidenav-toggler-line"></i>
-                <i class="sidenav-toggler-line"></i>
-                <i class="sidenav-toggler-line"></i>
-              </div>
-            </a>
           </li>
           <li class="px-3 nav-item d-flex align-items-center">
             <!-- <a
@@ -74,18 +72,9 @@
             :class="this.$store.state.isRTL ? 'ps-2' : 'pe-2'"
           >
             <a
-              href="#"
-              class="p-0 nav-link"
-              :class="[
-                textWhite ? textWhite : 'text-body',
-                showMenu ? 'show' : '',
-              ]"
-              id="dropdownMenuButton"
-              data-bs-toggle="dropdown"
-              aria-expanded="false"
-              @click="showMenu = !showMenu"
+              @click="logout"
             >
-              <i class="cursor-pointer fa fa-bell"></i>
+              <i class="cursor-pointer fa fa-sign-out"></i>
             </a>
             <ul
               class="px-2 py-3 dropdown-menu dropdown-menu-end me-sm-n4"
@@ -195,6 +184,20 @@
               </li>
             </ul>
           </li>
+          <li class="nav-item d-xl-none ps-3 d-flex align-items-center">
+            <a
+              href="#"
+              @click="toggleSidebar"
+              class="p-0 nav-link text-body"
+              id="iconNavbarSidenav"
+            >
+              <div class="sidenav-toggler-inner">
+                <i class="sidenav-toggler-line"></i>
+                <i class="sidenav-toggler-line"></i>
+                <i class="sidenav-toggler-line"></i>
+              </div>
+            </a>
+          </li>
         </ul>
       </div>
     </div>
@@ -203,6 +206,8 @@
 <script>
 import Breadcrumbs from "../Breadcrumbs.vue";
 import { mapMutations, mapActions } from "vuex";
+import SoftAvatar from "@/components/SoftAvatar.vue";
+import axios from 'axios';
 
 export default {
   name: "navbar",
@@ -214,18 +219,30 @@ export default {
   props: ["minNav", "textWhite"],
   created() {
     this.minNav;
+    this.navbarMinimize();
   },
   methods: {
     ...mapMutations(["navbarMinimize", "toggleConfigurator"]),
     ...mapActions(["toggleSidebarColor"]),
 
     toggleSidebar() {
-      this.toggleSidebarColor("bg-white");
+      this.toggleSidebarColor("bg-black");
       this.navbarMinimize();
     },
+    logout() {
+      axios.get('http://localhost:3000/auth/google/logout', { withCredentials: true })
+        .then(() => {
+          this.$store.dispatch('logout');
+          this.$router.push('/sign-in');
+        })
+        .catch(error => {
+          console.error('Logout failed:', error);
+        });
+    }
   },
   components: {
     Breadcrumbs,
+    SoftAvatar,
   },
   computed: {
     currentRouteName() {

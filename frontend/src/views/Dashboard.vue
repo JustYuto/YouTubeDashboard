@@ -1,10 +1,13 @@
 <template>
   <div class="py-4 container-fluid">
-    <div class="row">
+    <div class="row mb-4">
       <div class="col-xl-3 col-sm-6 mb-xl-0 mb-4">
         <mini-statistics-card
           title="adsense earnings"
-          value="$53 432"
+          :value="{
+            text: '53 432',
+            dollar: true
+          }"
           :percentage="{
             value: '+505%',
             color: 'text-success',
@@ -19,7 +22,10 @@
       <div class="col-xl-3 col-sm-6 mb-xl-0 mb-4">
         <mini-statistics-card
           title="other earnings"
-          value="$193 543"
+          :value="{
+            text: '193 567',
+            dollar: true
+          }"
           :percentage="{
             value: '+3%',
             color: 'text-success',
@@ -32,9 +38,10 @@
         />
       </div>
       <div class="col-xl-3 col-sm-6 mb-xl-0 mb-4">
+        <!-- this.$store.state.channels?.statistics?.viewCount -->
         <mini-statistics-card
           title="views"
-          value="23 576"
+          value="0" 
           :percentage="{
             value: '-2%',
             color: 'text-danger',
@@ -46,10 +53,11 @@
           direction-reverse
         />
       </div>
-      <div class="col-xl-3 col-sm-6 mb-xl-0">
+      <!-- this.$store.state.channels?.statistics?.subscriberCount -->
+      <div class="col-xl-3 col-sm-6 mb-xl-0 mb-4">
         <mini-statistics-card
           title="subscribers"
-          value="- 342"
+          value="0"
           :percentage="{
             value: '+5%',
             color: 'text-success',
@@ -68,7 +76,7 @@
           <div class="card-body rounded-2xl p-3 bg-gradient-dark">
             <div class="row">
               <div class="col-lg">
-                <div class="d-flex flex-column h-100">
+                <div class="d-flex flex-column h-100 p-4">
                   <!-- <p class="mb-1 pt-2 text-bold">Built by developers</p> -->
                   <h2 class="font-weight-bolder">Take control Josh!</h2>
                   <p class="mb-5">
@@ -313,14 +321,29 @@ import US from "../assets/img/icons/flags/US.png";
 import DE from "../assets/img/icons/flags/DE.png";
 import GB from "../assets/img/icons/flags/GB.png";
 import BR from "../assets/img/icons/flags/BR.png";
+// import axios from "axios";
 import {
   faHandPointer,
   faUsers,
   faCreditCard,
   faScrewdriverWrench,
 } from "@fortawesome/free-solid-svg-icons";
+
+
+//  // Fetch user profile data when the component is mounted
+//  const fetchData = async () => {
+//     try {
+//       const response = await axios.get('http://localhost:3000/api/youtube/channels', {withCredentials: true});
+//       console.log(response)
+//       // store.dispatch('fetchUser', localStorage.getItem("token"))
+//     } catch (error) {
+//       console.error('Failed to fetch user profile:', error);
+//     }
+//   };
+  
+//   fetchData();
+
 export default {
-  name: "dashboard-default",
   data() {
     return {
       iconBackground: "bg-gradient-success",
@@ -373,3 +396,44 @@ export default {
   },
 };
 </script>
+
+<style>
+
+.fc-h-event {
+  border: 1px solid hsla(337, 75%, 59%, 1);
+    padding: 8px 8px 8px 10px;
+    background: transparent;
+}
+
+.fc .fc-daygrid-day.fc-day-today {
+  background-color: rgba(229, 72, 132, 0.187);
+  border-right: 1px solid white;
+}
+
+.fc .fc-button-primary {
+  background: transparent;
+    border-color: hsla(0, 0%, 100%, 0.4);
+}
+
+.fc .fc-button-primary:hover {
+  background: hsla(337, 75%, 59%, 1);
+}
+
+.fc .fc-button:disabled {
+  background: transparent;
+  color: hsla(0, 0%, 100%, 1);
+  border-color: hsla(0, 0%, 100%, 0.4);
+}
+
+.fc .fc-button-primary:not(:disabled).fc-button-active {
+  background: hsla(337, 75%, 59%, 1);
+  color: hsla(0, 0%, 100%, 1) !important;
+  border-color: hsla(0, 0%, 100%, 0.4);
+}
+
+.card .card-body {
+  display: flex;
+    align-items: center;
+}
+
+</style>
