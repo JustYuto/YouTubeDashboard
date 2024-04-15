@@ -70,21 +70,15 @@
     <h2>Managed YouTube Channels</h2>
     <div class="row">
       <div class="col-md-6" v-for="(channel, index) in channels" :key="index">
-        <div class="card mb-3">
+        <div class="mb-3 my-card">
           <div class="card-body">
             <h5 class="cardTitle">{{ channel.name }}</h5>
-            <h6 class="card-subtitle mb-2 text-muted">
+            <h6 class="card-subtitle mb-2">
               Channel ID: {{ channel.channelId }}
             </h6>
-            <p class="card-text mb-2 text-muted">
-              Start since {{ channel.startDate }}
-            </p>
-            <p class="card-text mb-2 text-muted">
-              Subscribers: {{ channel.subscribers }}
-            </p>
-            <p class="card-text mb-2 text-muted">
-              Total views: {{ channel.views }}
-            </p>
+            <p class="card-text mb-2">Start since {{ channel.startDate }}</p>
+            <p class="card-text mb-2">Subscribers: {{ channel.subscribers }}</p>
+            <p class="card-text mb-2">Total views: {{ channel.views }}</p>
           </div>
         </div>
       </div>
@@ -246,8 +240,13 @@ export default {
   
   
   <style>
-.cardTitle {
-  color: #007bff; /* Bootstrap primary color */
+.card-text {
+  color: rgb(225, 225, 225) strap primary color * /;
+}
+.my-card {
+  background-color: #7d1b3e;
+  color: #ffffff;
+  border-radius: 10px 20px 30px 40px;
 }
 </style>
   <style src="../../css/style.css"></style>

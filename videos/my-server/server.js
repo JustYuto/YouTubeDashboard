@@ -69,11 +69,11 @@ async function getVideoStatistics(videoIds, accessToken) {
     const response = await axios.get("https://www.googleapis.com/youtube/v3/videos", {
       params: {
         part: 'statistics',
-        id: videoIds.join(','), // 複数のビデオIDをカンマ区切りの文字列で指定
+        id: videoIds.join(','), 
         access_token: accessToken,
       }
     });
-    return response.data.items; // 各ビデオの統計情報を含む配列を返す
+    return response.data.items;
   } catch (error) {
     console.error("Error fetching video statistics:", error);
     return [];
@@ -218,22 +218,22 @@ app.get("/api/report", (req, res) => {
   }
 });
 
-app.post('/cancellation-requests', (req, res) => {
+  app.post('/cancellation-requests', (req, res) => {
 
-  const userId = req.body.user_id;
+    const userId = req.body.user_id;
 
-  const query = 'INSERT INTO cancellation_requests (user_id, status) VALUES (?, ?)';
-  const values = [userId, 'pending'];
+    const query = 'INSERT INTO cancellation_requests (user_id, status) VALUES (?, ?)';
+    const values = [userId, 'pending'];
 
-  connection.query(query, values, (error, results) => {
-    if (error) {
-      console.error('Database error: ', error);
-      return res.status(500).send('Inner server error');
-    }
+    connection.query(query, values, (error, results) => {
+      if (error) {
+        console.error('Database error: ', error);
+        return res.status(500).send('Inner server error');
+      }
 
-    res.send('Your request was sent.');
+      res.send('Your request was sent.');
+    });
   });
-});
 
 app.get('/cancellation-requests/review', (req, res) => {
   const query = 'SELECT * FROM cancellation_requests';
