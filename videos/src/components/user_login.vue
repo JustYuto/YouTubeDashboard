@@ -202,8 +202,17 @@ export default {
         console.log("User Data:", userDetails);
         this.userDetails = userDetails;
         
-        //store data for finance page
+        //store data for finance 
         this.$store.commit('setAnalyticsData', response.data.analyticsData);
+
+        //store data for channel analytics
+        this.$store.commit('setAnalyticsData2', response.data.analyticsData2);
+
+        //store data for channel analytics 2
+        this.$store.commit('setAnalyticsData3', response.data.analyticsData3);
+
+        //store data for channel analytics 2
+        this.$store.commit('setAnalyticsData4', response.data.analyticsData4);
         
         // Navigate to the home-video page first
         this.$router.push("/video_HomePage");

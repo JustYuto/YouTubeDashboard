@@ -32,6 +32,10 @@
               <i class="bx bx-message-square-detail nav_icon"></i>
               <span class="nav_name">Finances</span>
             </a>
+            <a href="#" @click.prevent="goToAnalyticsPage" class="nav_link">
+              <i class="bx bx-message-square-detail nav_icon"></i>
+              <span class="nav_name">Analytics</span>
+            </a>
             <a href="#" class="nav_link">
               <i class="bx bx-bookmark nav_icon"></i>
               <span class="nav_name">Settings</span>
@@ -162,7 +166,16 @@ export default {
     ...mapState(["videos"]),
     analyticsData() {
     return this.$store.state.analyticsData;
-  },
+    },
+    analyticsData2() {
+    return this.$store.state.analyticsData2;
+    },
+    analyticsData3() {
+    return this.$store.state.analyticsData3;
+    },
+    analyticsData4() {
+    return this.$store.state.analyticsData4;
+    },
   },
   mounted() {
     console.log("Video info:", this.videos);
@@ -170,6 +183,9 @@ export default {
   methods: {
     goToFinancePage() {
       this.$router.push({ name: 'finance-info' });
+    },
+    goToAnalyticsPage() {
+      this.$router.push({ name: 'analytics-info' });
     },
     logout() {
       // Example logout implementation

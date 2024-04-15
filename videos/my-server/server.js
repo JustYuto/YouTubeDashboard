@@ -73,6 +73,40 @@ app.post("/auth/callback", async (req, res) => {
         }).catch(error => {
             console.error("Error initiating report fetching:", error);
         });
+        
+        // Fetch additional YouTube analytics data for city and metrics
+        const analyticsData2Response = await youtubeAnalytics.reports.query({
+            ids: `channel==${channelID}`,
+            startDate: '2024-01-01',
+            endDate: '2024-03-31',
+            metrics: 'estimatedMinutesWatched,averageViewDuration,views',
+            dimensions: 'city',
+            sort: '-estimatedMinutesWatched',
+            maxResults: 10
+        });
+        console.log("Analytics Data2 Response:", analyticsData2Response.data);
+
+        // Fetch additional YouTube analytics data for age and gender
+        const analyticsData3Response = await youtubeAnalytics.reports.query({
+            ids: `channel==${channelID}`,
+            startDate: '2024-01-01',
+            endDate: '2024-03-31',
+            metrics: 'viewerPercentage',
+            dimensions: 'ageGroup,gender',
+            sort: '-viewerPercentage',
+        });
+        console.log("Analytics Data3 Response:", analyticsData3Response.data);
+
+        // Fetch additional YouTube analytics data for subscribers by country
+        const analyticsData4Response = await youtubeAnalytics.reports.query({
+            ids: `channel==${channelID}`,
+            startDate: '2023-10-01',
+            endDate: '2024-03-01',
+            metrics: 'subscribersGained,subscribersLost,views',
+            dimensions: 'month,country',
+            sort: 'month,-subscribersGained',
+        });
+        console.log("Analytics Data3 Response:", analyticsData4Response.data);
 
         // Combine all the data into one response object
         const responsePayload = {
@@ -81,18 +115,18 @@ app.post("/auth/callback", async (req, res) => {
             videos: videosResponse.data,
             user: userResponse.data,
             analyticsData: analyticsResponse.data,
+            analyticsData2: analyticsData2Response.data,
+            analyticsData3: analyticsData3Response.data,
+            analyticsData4: analyticsData4Response.data,
             message: "Authentication successful",
         };
 
         res.status(200).json(responsePayload);
+
     } catch (error) {
         console.error("Error during API request:", error);
         res.status(500).json({ message: "Failed to process request" });
     }
-});
-
-app.listen(port, () => {
-    console.log(`Server running on port ${port}`);
 });
 
 app.get("/api/videos", (req, res) => {
@@ -101,6 +135,10 @@ app.get("/api/videos", (req, res) => {
     } else {
         res.status(404).json({ message: "No videos found" });
     }
+});
+
+app.listen(port, () => {
+    console.log(`Server running on port ${port}`);
 });
 
 async function fetchEstimatedRevenueReports(auth) {
