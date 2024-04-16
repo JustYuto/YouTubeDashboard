@@ -86,7 +86,7 @@
                   alt="Channel Name">
                 <div class="card-body d-flex justify-content-between align-items-center">
                   <div class="d-flex flex-column">
-                    <h5 class="card-title">{{ this.$store.state.channels?.snippet?.description }}</h5>
+                    <h5 class="card-title">{{ this.$store.state.channels?.snippet?.title }}</h5>
                   <p class="card-text">{{ this.$store.state.channels?.statistics?.subscriberCount }} subscribers</p>
                   </div>
                   <a href="#" class="btn btn-primary" style="background-color: hsla(234, 100%, 69%, 1);">Linked</a>

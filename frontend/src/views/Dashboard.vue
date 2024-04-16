@@ -41,7 +41,7 @@
         <!-- this.$store.state.channels?.statistics?.viewCount -->
         <mini-statistics-card
           title="views"
-          value="0" 
+          :value=this.$store.state.channels?.statistics?.viewCount
           :percentage="{
             value: '-2%',
             color: 'text-danger',
@@ -57,7 +57,7 @@
       <div class="col-xl-3 col-sm-6 mb-xl-0 mb-4">
         <mini-statistics-card
           title="subscribers"
-          value="0"
+          :value=this.$store.state.channels?.statistics?.subscriberCount
           :percentage="{
             value: '+5%',
             color: 'text-success',
