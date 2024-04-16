@@ -74,10 +74,10 @@
       <div class="row">
         <div class="row analytics-header">
           <div class="col-md-6">
-            <h1>Top 10 City Analytics Overview</h1>
+            <h2>Top 10 City Analytics Overview</h2>
           </div>
           <div class="col-md-6">
-            <h1>Gender Overview</h1>
+            <h2>Gender Overview</h2>
           </div> 
         </div>
       </div>
@@ -97,13 +97,13 @@
       <div class="row">
         <!-- This Month Earnings Column -->
         <div class="col-md-6 canvas-container">
-          <h3>Subscribers by Country and Month</h3>
+          <h2>Subscribers by Country and Month</h2>
           <canvas ref="subscribersChart" id="subscribersChart" width="400" height="300"></canvas>
         </div>
         <!-- Age Pie Column -->
         <div class="col-md-6 canvas-container">
             <div class="d-flex justify-content-between align-items-center">
-            <h3>Age Group Overview</h3>
+            <h2>Age Group Overview</h2>
             <button @click="resetCharts" class="btn btn-custom">Reset Charts</button>
         </div>
             <canvas ref="ageGroupPieChart" id="ageGroupPieChart" width="400" height="300"></canvas>
@@ -129,9 +129,7 @@
         originalAgeGroupData: {},
         genderData: {}, // Initialize as an empty object
         ageGroupData: {}, // Initialize this as well
-        selectedCategory: 'All',
-        //monthlyEarningsChartInstance: null,
-        selectedFilter: 'All',
+        uniqueColors: new Set(),
         channels: [
           { name: 'Marques Brownlee', subscribers: '6M', profilePic: '/assets/Marques Brownlee.jpg',color: '#FF0000'},
           { name: 'Mr Beast - Jimmy', subscribers: '16M', profilePic: '/assets/Mr Beast.jpg',color: '#FFC107'},
@@ -408,6 +406,8 @@
       },
       options: {
         responsive: true,
+        maintainAspectRatio: true, // Maintains the aspect ratio
+        aspectRatio: 1, // Ensures the pie chart is always round
         plugins: {
           legend: { display: true, position: 'right' },
           tooltip: { enabled: true },
@@ -507,15 +507,34 @@
                     position: 'top'
                 },
             tooltip: {
-                enabled: true
+              enabled: true,
+              mode: 'index',
+              intersect: false,
+              callbacks: {
+                label: function(tooltipItem) {
+                  if (tooltipItem.parsed.y !== 0) {
+                    return `${tooltipItem.dataset.label}: ${tooltipItem.parsed.y} subscribers`;
+                  }
+                  return null;
+                },
+                labelColor: function(tooltipItem) {
+                  return {
+                    backgroundColor: tooltipItem.dataset.borderColor
+                  };
                 }
+              }
             }
+          }
         }
         });
-    },   
+      },   
       getRandomColor() {
-        // This is a placeholder function. You should replace it with actual logic to generate random colors.
-        return `rgba(${Math.floor(Math.random() * 255)}, ${Math.floor(Math.random() * 255)}, ${Math.floor(Math.random() * 255)}, 1)`;
+      let color;
+      do {
+        color = `hsl(${Math.floor(Math.random() * 360)}, 100%, 50%)`; 
+      } while (this.uniqueColors.has(color));
+        this.uniqueColors.add(color);
+        return color;
       },
       getTransparentColor(color) {
         // This is a placeholder function. You should replace it with actual logic to convert colors to their transparent equivalents.
@@ -540,11 +559,8 @@
       #main-container {
         padding-left: 100px; /* Smaller padding for smaller screens if the sidebar is also smaller */
       }
-      .analytics-header .col-md-6 {
-      text-align: center; /* Center text for small screens */
-      }
-      .analytics-header .col-md-6:first-child {
-        margin-bottom: 10px; /* Add space between the title and details on small screens */
+      .canvas-container canvas {
+        height: 300px !important;
       }
     }
     
@@ -556,18 +572,6 @@
     #cityWatchChart {
     height: 400px; /* Set a fixed height for the chart area */
     width: 100%; /* Ensure the chart takes full width */
-    }
-
-    .analytics-header {
-    background: rgba(18, 52, 86, 0.0); /* Replace with the gradient you want */
-    padding: 10px 0; /* Add padding as necessary */
-    color: #FFFFFF; /* Replace with the color of your text */
-    }
-  
-    .analytics-header h1 {
-      margin: 0;
-      padding: 0;
-      font-size: 31px; /* Adjust font size as needed */
     }
   
     .analytics-details p {
