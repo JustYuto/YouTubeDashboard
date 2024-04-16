@@ -19,10 +19,10 @@
     rel="stylesheet" 
     integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" 
     crossorigin="anonymous">
-    <!-- Bootstrap CSS -->
+    <!-- Bootstrap CSS 
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
-
+    -->
   </head>
   <header role="banner" id="fh5co-header">
     <div class="l-navbar" id="nav-bar">
@@ -150,14 +150,14 @@
           </div>
           <div class="col text-end">
             <div class="dropdown">
-              <button class="btn btn-custom dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              <button class="btn btn-custom dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
                 Filter History
               </button>
-              <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                <a class="dropdown-item" href="#" @click.prevent="selectedFilter = 'All'">All</a>
-                <a class="dropdown-item" href="#" @click.prevent="selectedFilter = 'Earnings'">Earnings</a>
-                <a class="dropdown-item" href="#" @click.prevent="selectedFilter = 'Payment'">Payment</a>
-              </div>
+              <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                <li><a class="dropdown-item" href="#" @click.prevent="selectedFilter = 'All'">All</a></li>
+                <li><a class="dropdown-item" href="#" @click.prevent="selectedFilter = 'Earnings'">Earnings</a></li>
+                <li><a class="dropdown-item" href="#" @click.prevent="selectedFilter = 'Payment'">Payment</a></li>
+              </ul>
             </div>
           </div>
             <!--
@@ -315,13 +315,13 @@ export default {
   }, 
   computed: {
     ...mapState(['analyticsData']),
-
     uniqueCategories() {
       // Extracts all names from the history array and then filters out duplicates
       const names = this.history.map(item => item.name);
       return Array.from(new Set(names)); // Convert Set back to Array to get unique values
     },
     filteredHistory() {
+    console.log("Filtering history for filter:", this.selectedFilter);
     if (this.selectedFilter === 'All') {
       return this.history;
     }
@@ -401,6 +401,9 @@ export default {
         },
         options: {
         plugins: {
+          legend: {
+          display: false // Disable legend
+          },
           tooltip: {
             enabled: true, // Enable tooltips
             mode: 'index', // Show tooltips for all items in the index
@@ -463,6 +466,9 @@ export default {
         data: { labels, datasets },
         options: {
           plugins: {
+            legend: {
+              display: false // Disable legend
+            },
             tooltip: {
               enabled: true, // Ensures tooltips are enabled
               callbacks: {
