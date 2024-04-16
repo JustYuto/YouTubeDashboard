@@ -12,9 +12,9 @@ import search from "./components/search.vue";
 import { Chart } from 'chart.js';
 import vue3GoogleLogin from 'vue3-google-login'
 import store from './store/index';
-import BootstrapVue3 from 'bootstrap-vue-3'
+import { BootstrapVue3 } from 'bootstrap-vue-3';
+import 'bootstrap-vue-3/dist/bootstrap-vue-3.css';
 
-import 'bootstrap-vue-3/dist/bootstrap-vue-3.css'
 
 
 // import VueYoutubeEmbed from "vue-youtube-embed";
