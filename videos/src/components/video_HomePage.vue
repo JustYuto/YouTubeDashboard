@@ -185,9 +185,6 @@ export default {
       },
     };
   },
-  // mounted() {
-  //   this.fetchVideos();
-  // },
   computed: {
     ...mapState(["videos"]),
     filteredVideos() {
@@ -223,25 +220,6 @@ export default {
     return this.$store.state.analyticsData4;
     },
   },
-  mounted() {
-    console.log("Video info:", this.videos);
-  },
-  methods: {
-    goToFinancePage() {
-      this.$router.push({ name: 'finance-info' });
-    },
-    goToAnalyticsPage() {
-      this.$router.push({ name: 'analytics-info' });
-    },
-    logout() {
-      // Example logout implementation
-      // Clear user data, e.g., remove tokens from localStorage
-      localStorage.removeItem("userToken"); // Adjust based on how you store tokens
-
-      // Redirect to login page or another appropriate action
-      this.$router.push({ name: 'user-login' }); // Adjust the route name as necessary
-    },
-  },
   watch: {
     videos(newVideos) {
       console.log("Videos updated in component", newVideos);
@@ -250,6 +228,7 @@ export default {
   mounted() {
     console.log("video_HomePage has been mounted");
     console.log("Current store videos:", this.$store.state.videos);
+    console.log("Video info:", this.videos);
 
     if (!this.videos || this.videos.length === 0) {
       this.fetchVideos();
@@ -274,6 +253,20 @@ export default {
       if (this.currentPage > 1) {
         this.currentPage--;
       }
+    },
+    goToFinancePage() {
+      this.$router.push({ name: 'finance-info' });
+    },
+    goToAnalyticsPage() {
+      this.$router.push({ name: 'analytics-info' });
+    },
+    logout() {
+      // Example logout implementation
+      // Clear user data, e.g., remove tokens from localStorage
+      localStorage.removeItem("userToken"); // Adjust based on how you store tokens
+
+      // Redirect to login page or another appropriate action
+      this.$router.push({ name: 'user-login' }); // Adjust the route name as necessary
     },
   },
 };
