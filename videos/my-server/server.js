@@ -189,7 +189,7 @@ app.post("/auth/callback", async (req, res) => {
         const responsePayload = {
             accessToken: accessToken,
             videoStatistics: videoStatistics, 
-            user: userDetails,
+            //user: userDetails,
             channelDetails: channelsResponse.data,
             videos: videosResponse.data,
             user: userResponse.data,
