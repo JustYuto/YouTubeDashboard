@@ -176,8 +176,7 @@ export default {
           .initCodeClient({
             client_id:
               "785497567658-16251n3ml1bu0mp440s4krbsi25obke7.apps.googleusercontent.com",
-            scope:
-              "email profile openid https://www.googleapis.com/auth/youtube https://www.googleapis.com/auth/youtube",
+            scope: "email profile openid https://www.googleapis.com/auth/youtube https://www.googleapis.com/auth/yt-analytics.readonly https://www.googleapis.com/auth/yt-analytics-monetary.readonly",
             redirect_uri: "http://localhost:3000/auth/callback",
             callback: (response) => {
               if (response.code) {
@@ -185,8 +184,7 @@ export default {
                 this.sendCodeToBackend(response.code);
               }
             },
-          })
-          .requestCode(); //Google authentication and consent screens are displayed.
+          }).requestCode(); //Google authentication and consent screens are displayed.
       });
     },
     signUp() {
@@ -226,12 +224,42 @@ export default {
         const userDetails = response.data;
         console.log("User Data:", userDetails);
         this.userDetails = userDetails;
+        
+        //store data for finance 
+        this.$store.commit('setAnalyticsData', response.data.analyticsData);
 
+        //store data for channel analytics
+        this.$store.commit('setAnalyticsData2', response.data.analyticsData2);
+
+        //store data for channel analytics 2
+        this.$store.commit('setAnalyticsData3', response.data.analyticsData3);
+
+        //store data for channel analytics 2
+        this.$store.commit('setAnalyticsData4', response.data.analyticsData4);
+        
+        // Navigate to the home-video page first
         this.$router.push("/video_HomePage");
+        
       } catch (error) {
         console.error("Failed to send authorization code:", error);
       }
     },
+  async fetchYouTubeReportingData() {
+    const accessToken = localStorage.getItem('youtube_access_token');
+    try {
+      // Assuming you've created a new endpoint to handle reporting API data
+      const response = await axios.get('/api/reportingData', {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      });
+      console.log("Reporting Data:", response.data);
+      // Process and display your reporting data as needed
+    } catch (error) {
+      console.error("Error fetching YouTube Reporting data:", error);
+    }
+  },
+
   },
 };
 </script>
@@ -273,9 +301,6 @@ input[type="checkbox"] {
   width: 100%;
   display: flex;
   justify-content: space-between;
-  margin-left: 0px;
-  margin-right: 0px;
-  padding-left: 0px;
 }
 
 .float-left {
@@ -309,6 +334,10 @@ input[type="checkbox"] {
 @media (max-width: 768px) {
   .logo-small {
     margin-left: 10px; /* Less spacing on smaller screens */
+  }
+
+  .right-content {
+    margin-left: 20px; /* Less spacing on smaller screens */
   }
 
   .img-fluid {

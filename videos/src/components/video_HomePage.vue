@@ -32,6 +32,10 @@
               <i class="bx bx-message-square-detail nav_icon"></i>
               <span class="nav_name">Finances</span>
             </a>
+            <a href="#" @click.prevent="goToAnalyticsPage" class="nav_link">
+              <i class="bx bx-message-square-detail nav_icon"></i>
+              <span class="nav_name">Analytics</span>
+            </a>
             <a href="#" class="nav_link">
               <i class="bx bx-bookmark nav_icon"></i>
               <span class="nav_name">Settings</span>
@@ -48,10 +52,11 @@
               <i class="bx bx-bar-chart-alt-2 nav_icon"></i>
               <span class="nav_name">Comments</span>
             </a>
-            <a href="/user_login" class="nav_link">
-              <i class="bx bx-bar-chart-alt-2 nav_icon"></i>
-              <span class="nav_name">Log out</span>
+            <a href="#" class="nav_link" @click.prevent="logout">
+              <i class="bx bx-log-out nav_icon"></i>
+              <span class="nav_name">Logout</span>
             </a>
+
           </div>
         </div>
       </nav>
@@ -204,6 +209,37 @@ export default {
       const start = (this.currentPage - 1) * this.videosPerPage;
       const end = start + this.videosPerPage;
       return this.filteredVideos.slice(start, end);
+    },
+    analyticsData() {
+    return this.$store.state.analyticsData;
+    },
+    analyticsData2() {
+    return this.$store.state.analyticsData2;
+    },
+    analyticsData3() {
+    return this.$store.state.analyticsData3;
+    },
+    analyticsData4() {
+    return this.$store.state.analyticsData4;
+    },
+  },
+  mounted() {
+    console.log("Video info:", this.videos);
+  },
+  methods: {
+    goToFinancePage() {
+      this.$router.push({ name: 'finance-info' });
+    },
+    goToAnalyticsPage() {
+      this.$router.push({ name: 'analytics-info' });
+    },
+    logout() {
+      // Example logout implementation
+      // Clear user data, e.g., remove tokens from localStorage
+      localStorage.removeItem("userToken"); // Adjust based on how you store tokens
+
+      // Redirect to login page or another appropriate action
+      this.$router.push({ name: 'user-login' }); // Adjust the route name as necessary
     },
   },
   watch: {

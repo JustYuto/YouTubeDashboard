@@ -10,6 +10,7 @@
     "test": "jest"
   },
   "dependencies": {
+    "@popperjs/core": "^2.11.8",
     "axios": "^1.6.2",
     "bootstrap": "^5.3.2",
     "bootstrap-vue": "^2.23.1",
@@ -23,11 +24,13 @@
     "mysql": "^2.18.1",
     "querystring-es3": "^0.2.1",
     "vue": "^3.2.13",
+    "vue-datepicker-ui": "^3.1.1",
     "vue-google-oauth2": "^1.5.10",
     "vue-multiselect": "^2.1.8",
     "vue-router": "^4.2.5",
     "vue-youtube-embed": "^2.2.2",
     "vue3-google-login": "^2.0.25",
+    "vue3-popper": "^1.5.0",
     "vuex": "^4.1.0",
     "vuex-persistedstate": "^4.1.0",
     "youtube-api-v3-search": "^1.2.1"
@@ -44,7 +47,6 @@
     "eslint": "^7.32.0",
     "eslint-plugin-vue": "^8.0.3",
     "jest": "^29.7.0",
-    "vue-jest": "^3.0.7",
     "webpack-cli": "^5.1.4"
   },
   "eslintConfig": {
