@@ -4,7 +4,7 @@ import createPersistedState from 'vuex-persistedstate';
 export default createStore({
   plugins: [createPersistedState({
     
-    paths: ['videos', 'userId'], 
+    paths: ['videos', 'userId', 'analyticsData', 'analyticsData2', 'analyticsData3', 'analyticsData4'], 
     storage: window.sessionStorage, 
   })],
   state() {
