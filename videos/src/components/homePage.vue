@@ -20,17 +20,28 @@
       <nav class="nav">
         <div>
           <div class="nav_list">
+            <a href="#" class="nav_link active">
+              <img
+                src="@/assets/webtvasia logo.png"
+                alt="Logo"
+                class="logo-small"
+              />
+            </a>
             <a href="/homePage" class="nav_link active">
               <i class="bx bx-grid-alt nav_icon"></i>
               <span class="nav_name">Home</span>
             </a>
-            <a href="#" class="nav_link">
+            <a href="/video_HomePage" class="nav_link">
               <i class="bx bx-user nav_icon"></i>
               <span class="nav_name">Videos</span>
             </a>
             <a href="/finance_info" class="nav_link">
               <i class="bx bx-message-square-detail nav_icon"></i>
               <span class="nav_name">Finances</span>
+            </a>
+            <a href="/analytics_info" class="nav_link">
+              <i class="bx bx-message-square-detail nav_icon"></i>
+              <span class="nav_name">Analytics</span>
             </a>
             <a href="#" class="nav_link">
               <i class="bx bx-bookmark nav_icon"></i>
@@ -48,9 +59,9 @@
               <i class="bx bx-bar-chart-alt-2 nav_icon"></i>
               <span class="nav_name">Comments</span>
             </a>
-            <a href="/user_login" class="nav_link">
-              <i class="bx bx-bar-chart-alt-2 nav_icon"></i>
-              <span class="nav_name">Log out</span>
+            <a href="#" class="nav_link" @click.prevent="logout">
+              <i class="bx bx-log-out nav_icon"></i>
+              <span class="nav_name">Logout</span>
             </a>
           </div>
         </div>
@@ -91,6 +102,10 @@ export default {
           // エラー処理
           console.error("解約依頼の送信に失敗しました", error);
         });
+    },
+    logout() {
+      localStorage.removeItem("userToken"); 
+      this.$router.push({ name: 'user-login' });
     },
   },
 };

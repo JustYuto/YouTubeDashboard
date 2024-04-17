@@ -19,7 +19,7 @@
       content="913800804553-vlamv4rntbae79gc9n86e0mdt5vh9qfa.apps.googleusercontent.com"
     />
   </head>
-  <header role="banner" id="fh5co-header" :style="{ filter: blurStyle }">
+  <header role="banner" id="fh5co-header">
     <div class="l-navbar" id="nav-bar">
       <nav class="nav">
         <div>
@@ -31,7 +31,7 @@
                 class="logo-small"
               />
             </a>
-            <a href="/" class="nav_link active">
+            <a href="/homePage" class="nav_link active">
               <i class="bx bx-grid-alt nav_icon"></i>
               <span class="nav_name">Home</span>
             </a>
@@ -39,15 +39,19 @@
               <i class="bx bx-user nav_icon"></i>
               <span class="nav_name">Videos</span>
             </a>
-            <a href="#" class="nav_link">
+            <a href="/finance_info" class="nav_link">
               <i class="bx bx-message-square-detail nav_icon"></i>
               <span class="nav_name">Finances</span>
+            </a>
+            <a href="/analytics_info" class="nav_link">
+              <i class="bx bx-message-square-detail nav_icon"></i>
+              <span class="nav_name">Analytics</span>
             </a>
             <a href="#" class="nav_link">
               <i class="bx bx-bookmark nav_icon"></i>
               <span class="nav_name">Settings</span>
             </a>
-            <a href="#" class="nav_link">
+            <a href="/backOfficePage" class="nav_link">
               <i class="bx bx-folder nav_icon"></i>
               <span class="nav_name">Partner Deals</span>
             </a>
@@ -59,9 +63,9 @@
               <i class="bx bx-bar-chart-alt-2 nav_icon"></i>
               <span class="nav_name">Comments</span>
             </a>
-            <a href="/user_login" class="nav_link">
-              <i class="bx bx-bar-chart-alt-2 nav_icon"></i>
-              <span class="nav_name">Log out</span>
+            <a href="#" class="nav_link" @click.prevent="logout">
+              <i class="bx bx-log-out nav_icon"></i>
+              <span class="nav_name">Logout</span>
             </a>
           </div>
         </div>
@@ -433,6 +437,10 @@ export default {
     discardChanges() {
       this.isDiscardChanges = false;
       this.$router.push("/video_HomePage");
+    },
+    logout() {
+      localStorage.removeItem("userToken"); 
+      this.$router.push({ name: 'user-login' });
     },
   },
   mounted() {

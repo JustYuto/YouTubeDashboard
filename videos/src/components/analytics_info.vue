@@ -25,23 +25,30 @@
   
     </head>
     <header role="banner" id="fh5co-header">
-      <div class="l-navbar" id="nav-bar">
-        <nav class="nav">
+    <div class="l-navbar" id="nav-bar">
+      <nav class="nav">
         <div>
           <div class="nav_list">
             <a href="#" class="nav_link active">
+              <img
+                src="@/assets/webtvasia logo.png"
+                alt="Logo"
+                class="logo-small"
+              />
+            </a>
+            <a href="/homePage" class="nav_link active">
               <i class="bx bx-grid-alt nav_icon"></i>
               <span class="nav_name">Home</span>
             </a>
-            <a href="#" class="nav_link">
+            <a href="/video_HomePage" class="nav_link">
               <i class="bx bx-user nav_icon"></i>
               <span class="nav_name">Videos</span>
             </a>
-            <a href="#" @click.prevent="goToFinancePage" class="nav_link">
+            <a href="/finance_info" class="nav_link">
               <i class="bx bx-message-square-detail nav_icon"></i>
               <span class="nav_name">Finances</span>
             </a>
-            <a href="#" @click.prevent="goToAnalyticsPage" class="nav_link">
+            <a href="/analytics_info" class="nav_link">
               <i class="bx bx-message-square-detail nav_icon"></i>
               <span class="nav_name">Analytics</span>
             </a>
@@ -49,7 +56,7 @@
               <i class="bx bx-bookmark nav_icon"></i>
               <span class="nav_name">Settings</span>
             </a>
-            <a href="#" class="nav_link">
+            <a href="/backOfficePage" class="nav_link">
               <i class="bx bx-folder nav_icon"></i>
               <span class="nav_name">Partner Deals</span>
             </a>
@@ -68,8 +75,8 @@
           </div>
         </div>
       </nav>
-      </div>
-    </header>
+    </div>
+  </header>
     <div class="container-fluid" id="main-container">
       <div class="row">
         <div class="row analytics-header">
@@ -209,22 +216,9 @@
       }
     },
     methods: {
-      goToVideoPage() {
-        this.$router.push({ name: 'home-video' });
-        },
-      goToFinancePage() {
-        this.$router.push({ name: 'finance-info' });
-        },
-      goToAnalyticsPage() {
-        this.$router.push({ name: 'analytics-info' });
-        },
       logout() {
-        // Example logout implementation
-        // Clear user data, e.g., remove tokens from localStorage
-        localStorage.removeItem("userToken"); // Adjust based on how you store tokens
-
-        // Redirect to login page or another appropriate action
-        this.$router.push({ name: 'user-login' }); // Adjust the route name as necessary
+        localStorage.removeItem("userToken"); 
+        this.$router.push({ name: 'user-login' }); 
       },
       selectAllChannels() {
         this.selectedChannels = this.channels.map(channel => channel);
