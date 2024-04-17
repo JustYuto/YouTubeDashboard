@@ -61,7 +61,7 @@
             </a>
             <a href="#" class="nav_link" @click.prevent="logout">
               <i class="bx bx-log-out nav_icon"></i>
-              <span class="nav_name">Logout</span>
+              <span class="nav_name">Log out</span>
             </a>
           </div>
         </div>
@@ -214,16 +214,16 @@ export default {
       return this.filteredVideos.slice(start, end);
     },
     analyticsData() {
-    return this.$store.state.analyticsData;
+      return this.$store.state.analyticsData;
     },
     analyticsData2() {
-    return this.$store.state.analyticsData2;
+      return this.$store.state.analyticsData2;
     },
     analyticsData3() {
-    return this.$store.state.analyticsData3;
+      return this.$store.state.analyticsData3;
     },
     analyticsData4() {
-    return this.$store.state.analyticsData4;
+      return this.$store.state.analyticsData4;
     },
   },
   watch: {
@@ -261,8 +261,8 @@ export default {
       }
     },
     logout() {
-      localStorage.removeItem("userToken"); 
-      this.$router.push({ name: 'user-login' });
+      localStorage.removeItem("userToken");
+      this.$router.push({ name: "user-login" });
     },
   },
 };

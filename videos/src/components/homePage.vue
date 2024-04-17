@@ -61,7 +61,7 @@
             </a>
             <a href="#" class="nav_link" @click.prevent="logout">
               <i class="bx bx-log-out nav_icon"></i>
-              <span class="nav_name">Logout</span>
+              <span class="nav_name">Log out</span>
             </a>
           </div>
         </div>
@@ -104,8 +104,8 @@ export default {
         });
     },
     logout() {
-      localStorage.removeItem("userToken"); 
-      this.$router.push({ name: 'user-login' });
+      localStorage.removeItem("userToken");
+      this.$router.push({ name: "user-login" });
     },
   },
 };

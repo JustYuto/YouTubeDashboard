@@ -14,12 +14,12 @@
       integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO"
       crossorigin="anonymous"
     />-->
-    <link 
-    href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" 
-    rel="stylesheet" 
-    integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" 
-    crossorigin="anonymous">
-
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC"
+      crossorigin="anonymous"
+    />
   </head>
   <header role="banner" id="fh5co-header">
     <div class="l-navbar" id="nav-bar">
@@ -67,7 +67,7 @@
             </a>
             <a href="#" class="nav_link" @click.prevent="logout">
               <i class="bx bx-log-out nav_icon"></i>
-              <span class="nav_name">Logout</span>
+              <span class="nav_name">Log out</span>
             </a>
           </div>
         </div>
@@ -151,7 +151,12 @@
       <div class="col-md-6">
         <h3>Earnings Breakdown</h3>
         <p>Total: ${{ totalEarnings }}</p>
-        <canvas ref="monthlyEarningsChart" id="monthlyEarningsChart" width="400" height="200"></canvas>
+        <canvas
+          ref="monthlyEarningsChart"
+          id="monthlyEarningsChart"
+          width="400"
+          height="200"
+        ></canvas>
         <p>Percentage increase: {{ percentageIncrease }}%</p>
       </div>
       <!-- History Column -->
@@ -162,17 +167,44 @@
           </div>
           <div class="col text-end">
             <div class="dropdown">
-              <button class="btn btn-custom dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
+              <button
+                class="btn btn-custom dropdown-toggle"
+                type="button"
+                id="dropdownMenuButton"
+                data-bs-toggle="dropdown"
+                aria-expanded="false"
+              >
                 Filter History
               </button>
               <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                <li><a class="dropdown-item" href="#" @click.prevent="selectedFilter = 'All'">All</a></li>
-                <li><a class="dropdown-item" href="#" @click.prevent="selectedFilter = 'Earnings'">Earnings</a></li>
-                <li><a class="dropdown-item" href="#" @click.prevent="selectedFilter = 'Payment'">Payment</a></li>
+                <li>
+                  <a
+                    class="dropdown-item"
+                    href="#"
+                    @click.prevent="selectedFilter = 'All'"
+                    >All</a
+                  >
+                </li>
+                <li>
+                  <a
+                    class="dropdown-item"
+                    href="#"
+                    @click.prevent="selectedFilter = 'Earnings'"
+                    >Earnings</a
+                  >
+                </li>
+                <li>
+                  <a
+                    class="dropdown-item"
+                    href="#"
+                    @click.prevent="selectedFilter = 'Payment'"
+                    >Payment</a
+                  >
+                </li>
               </ul>
             </div>
           </div>
-            <!--
+          <!--
             <div class="dropdown">
               <button class="btn btn-custom dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                 Select Date Range
@@ -208,9 +240,12 @@
               </div>
             </div>
           </div>
-        -->
-        </div>
-        <div v-for="(item, index) in filteredHistory" :key="index" class="history-item">
+        --></div>
+        <div
+          v-for="(item, index) in filteredHistory"
+          :key="index"
+          class="history-item"
+        >
           <div class="history-content">
             <span>{{ item.name }}</span>
             <span>{{ item.date }}</span>
@@ -230,9 +265,24 @@
 </template>
 
 <script>
-import { mapState } from 'vuex';
-import { Chart, LineController, LineElement, PointElement, LinearScale, CategoryScale, Tooltip } from 'chart.js';
-Chart.register(LineController, LineElement, PointElement, LinearScale, CategoryScale, Tooltip);
+import { mapState } from "vuex";
+import {
+  Chart,
+  LineController,
+  LineElement,
+  PointElement,
+  LinearScale,
+  CategoryScale,
+  Tooltip,
+} from "chart.js";
+Chart.register(
+  LineController,
+  LineElement,
+  PointElement,
+  LinearScale,
+  CategoryScale,
+  Tooltip
+);
 //import 'vue-datepicker-ui/lib/vuedatepickerui.css';
 //import VueDatepickerUi from 'vue-datepicker-ui';
 //import { createPopper } from '@popperjs/core';
@@ -244,9 +294,9 @@ export default {
   },
   data() {
     return {
-      selectedCategory: 'All',
+      selectedCategory: "All",
       //monthlyEarningsChartInstance: null,
-      selectedFilter: 'All',
+      selectedFilter: "All",
       selectedChannels: [],
       channels: [
         {
@@ -290,13 +340,13 @@ export default {
       totalEarnings: 2000,
       percentageIncrease: 15,
       history: [
-        { name: 'Earnings YouTube Channel', date: '2022-01-01', amount: 200 },
-        { name: 'Payment Regular', date: '2022-01-02', amount: -300 },
-        { name: 'Earnings YouTube Recruiter', date: '2022-01-03', amount: 500 },
-        { name: 'Earnings YouTube Channel', date: '2022-01-03', amount: 700 },
-        { name: 'Payment Regular', date: '2022-01-04', amount: -100 },
-        { name: 'Earnings YouTube Channel', date: '2022-01-04', amount: 900 },
-        { name: 'Payment Regular', date: '2022-01-06', amount: -150 }
+        { name: "Earnings YouTube Channel", date: "2022-01-01", amount: 200 },
+        { name: "Payment Regular", date: "2022-01-02", amount: -300 },
+        { name: "Earnings YouTube Recruiter", date: "2022-01-03", amount: 500 },
+        { name: "Earnings YouTube Channel", date: "2022-01-03", amount: 700 },
+        { name: "Payment Regular", date: "2022-01-04", amount: -100 },
+        { name: "Earnings YouTube Channel", date: "2022-01-04", amount: 900 },
+        { name: "Payment Regular", date: "2022-01-06", amount: -150 },
         // Add other history items here
       ],
       colors: [
@@ -324,40 +374,47 @@ export default {
   },
   created() {
     this.selectAllChannels();
-  }, 
+  },
   computed: {
-    ...mapState(['analyticsData']),
+    ...mapState(["analyticsData"]),
     uniqueCategories() {
       // Extracts all names from the history array and then filters out duplicates
-      const names = this.history.map(item => item.name);
+      const names = this.history.map((item) => item.name);
       return Array.from(new Set(names)); // Convert Set back to Array to get unique values
     },
     filteredHistory() {
-    console.log("Filtering history for filter:", this.selectedFilter);
-    if (this.selectedFilter === 'All') {
-      return this.history;
-    }
-    return this.history.filter(item => item.name.includes(this.selectedFilter));
+      console.log("Filtering history for filter:", this.selectedFilter);
+      if (this.selectedFilter === "All") {
+        return this.history;
+      }
+      return this.history.filter((item) =>
+        item.name.includes(this.selectedFilter)
+      );
     },
   },
   mounted() {
-        this.$nextTick(() => {
-            // Debugging: Log to see if this runs after DOM updates
-            console.log("mounted() and $nextTick(): ", this.$refs.earningsChart, this.$refs.monthlyEarningsChart);
+    this.$nextTick(() => {
+      // Debugging: Log to see if this runs after DOM updates
+      console.log(
+        "mounted() and $nextTick(): ",
+        this.$refs.earningsChart,
+        this.$refs.monthlyEarningsChart
+      );
 
-            // Ensure elements are present before attempting to access them
-            if (this.$refs.earningsChart && this.$refs.monthlyEarningsChart) {
-                const ctxEarnings = this.$refs.earningsChart.getContext('2d');
-                const ctxMonthlyEarnings = this.$refs.monthlyEarningsChart.getContext('2d');
-                
-                // Now safe to proceed with chart initialization
-                this.renderEarningsChart(ctxEarnings); // Pass the context to your method if needed
-                this.renderMonthlyEarningsChart(ctxMonthlyEarnings); // Adjust method to accept context
-            } else {
-                console.error("One or both canvas elements not found");
-            }
-        });
-    },
+      // Ensure elements are present before attempting to access them
+      if (this.$refs.earningsChart && this.$refs.monthlyEarningsChart) {
+        const ctxEarnings = this.$refs.earningsChart.getContext("2d");
+        const ctxMonthlyEarnings =
+          this.$refs.monthlyEarningsChart.getContext("2d");
+
+        // Now safe to proceed with chart initialization
+        this.renderEarningsChart(ctxEarnings); // Pass the context to your method if needed
+        this.renderMonthlyEarningsChart(ctxMonthlyEarnings); // Adjust method to accept context
+      } else {
+        console.error("One or both canvas elements not found");
+      }
+    });
+  },
   beforeUnmount() {
     if (this.monthlyEarningsChartInstance) {
       this.monthlyEarningsChartInstance.destroy();
@@ -365,8 +422,8 @@ export default {
   },
   methods: {
     logout() {
-      localStorage.removeItem("userToken"); 
-      this.$router.push({ name: 'user-login' });
+      localStorage.removeItem("userToken");
+      this.$router.push({ name: "user-login" });
     },
     selectAllChannels() {
       this.selectedChannels = this.channels.map((channel) => channel);
@@ -383,10 +440,10 @@ export default {
     renderEarningsChart() {
       this.destroyChart(); // Destroy the existing chart before creating a new one
       if (!this.$refs.earningsChart) {
-        console.error('Earnings chart canvas element not found');
+        console.error("Earnings chart canvas element not found");
         return;
       }
-      const ctx = this.$refs.earningsChart.getContext('2d');
+      const ctx = this.$refs.earningsChart.getContext("2d");
       this.chartInstance = new Chart(ctx, {
         type: "line",
         data: {
@@ -410,30 +467,30 @@ export default {
               pointHoverRadius: 10,
               pointHoverBackgroundColor: channel.color,
             };
-          })
+          }),
         },
         options: {
-        plugins: {
-          legend: {
-          display: false // Disable legend
+          plugins: {
+            legend: {
+              display: false, // Disable legend
+            },
+            tooltip: {
+              enabled: true, // Enable tooltips
+              mode: "index", // Show tooltips for all items in the index
+              intersect: false, // Show tooltips even without hovering directly over an item
+              callbacks: {
+                label: function (context) {
+                  let label = context.dataset.label || "";
+                  if (label) {
+                    label += ": $";
+                  }
+                  label += context.parsed.y.toLocaleString();
+                  return label;
+                },
+              },
+            },
           },
-          tooltip: {
-            enabled: true, // Enable tooltips
-            mode: 'index', // Show tooltips for all items in the index
-            intersect: false, // Show tooltips even without hovering directly over an item
-            callbacks: {
-              label: function(context) {
-                let label = context.dataset.label || '';
-                if (label) {
-                  label += ': $';
-                }
-                label += context.parsed.y.toLocaleString();
-                return label;
-              }
-            }
-          }
-        }
-      }        
+        },
       });
     },
     getRandomColor() {
@@ -447,85 +504,92 @@ export default {
       return color.replace("1)", "0.2)");
     },
     getColor(index) {
-      const colors = ['#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#6610f2']; // Example colors
+      const colors = ["#FF6384", "#36A2EB", "#FFCE56", "#4BC0C0", "#6610f2"]; // Example colors
       return colors[index % colors.length];
     },
     renderMonthlyEarningsChart() {
-      if (!this.analyticsData || !this.analyticsData.rows || !this.$refs.monthlyEarningsChart) {
-        console.error("Required conditions not met for rendering monthly earnings chart.");
+      if (
+        !this.analyticsData ||
+        !this.analyticsData.rows ||
+        !this.$refs.monthlyEarningsChart
+      ) {
+        console.error(
+          "Required conditions not met for rendering monthly earnings chart."
+        );
         return;
       }
 
-      const ctx = this.$refs.monthlyEarningsChart.getContext('2d');
+      const ctx = this.$refs.monthlyEarningsChart.getContext("2d");
 
-      const labels = this.analyticsData.rows.map(row => row[0]);
-      const datasets = this.analyticsData.columnHeaders.slice(1).map((header, index) => {
-        return {
-          label: header.name,
-          data: this.analyticsData.rows.map(row => row[index + 1]),
-          borderColor: this.colors[index % this.colors.length],
-          fill: true, // Ensure the area under the line isn't filled
-          pointHoverRadius: 10,
-          pointHoverBackgroundColor: this.colors[index % this.colors.length]
-        };
-      });
+      const labels = this.analyticsData.rows.map((row) => row[0]);
+      const datasets = this.analyticsData.columnHeaders
+        .slice(1)
+        .map((header, index) => {
+          return {
+            label: header.name,
+            data: this.analyticsData.rows.map((row) => row[index + 1]),
+            borderColor: this.colors[index % this.colors.length],
+            fill: true, // Ensure the area under the line isn't filled
+            pointHoverRadius: 10,
+            pointHoverBackgroundColor: this.colors[index % this.colors.length],
+          };
+        });
 
       if (this.monthlyEarningsChartInstance) {
         this.monthlyEarningsChartInstance.destroy();
       }
 
       this.monthlyEarningsChartInstance = new Chart(ctx, {
-        type: 'line',
+        type: "line",
         data: { labels, datasets },
         options: {
           plugins: {
             legend: {
-              display: false // Disable legend
+              display: false, // Disable legend
             },
             tooltip: {
               enabled: true, // Ensures tooltips are enabled
               callbacks: {
-                label: function(context) {
+                label: function (context) {
                   // Assuming the value you want to format is in context.parsed.y
-                  let label = context.dataset.label || '';
+                  let label = context.dataset.label || "";
                   if (label) {
-                    label += ': $';
+                    label += ": $";
                   }
                   label += context.parsed.y.toLocaleString(); // This will convert the number to a string with commas as thousands separators
                   return label;
-                }
-              }
-            }
+                },
+              },
+            },
           },
-        scales: {
-          y: {
-            beginAtZero: true
-          }
+          scales: {
+            y: {
+              beginAtZero: true,
+            },
+          },
+        },
+      });
+    },
+  },
+  // For the watcher example, if you're not using newVal or oldVal, just omit them
+  watch: {
+    selectedChannels: {
+      handler() {
+        this.renderEarningsChart();
+        //this.renderMonthlyEarningsChart();
+      },
+      deep: true,
+    },
+    analyticsData: {
+      handler() {
+        if (this.analyticsData && this.analyticsData.rows) {
+          this.renderMonthlyEarningsChart();
         }
-      }
-    });
-    
-  },
-},
-// For the watcher example, if you're not using newVal or oldVal, just omit them
-watch: {
-  selectedChannels: {
-    handler() {
-      this.renderEarningsChart();
-      //this.renderMonthlyEarningsChart();
+      },
+      deep: true,
+      immediate: true,
     },
-    deep: true
   },
-  analyticsData: {
-    handler() {
-      if (this.analyticsData && this.analyticsData.rows) {
-        this.renderMonthlyEarningsChart();
-      }
-    },
-    deep: true,
-    immediate: true
-  }
-},
 };
 </script>
 
@@ -572,11 +636,11 @@ watch: {
   line-height: 1.5; /* Adjust line height as needed */
 }
 
-  .nav_link {
+.nav_link {
   text-decoration: none;
-  }
+}
 
-  .multiselect-col input[type="checkbox"] {
+.multiselect-col input[type="checkbox"] {
   margin-right: 10px; /* Spacing after checkbox */
 }
 
@@ -624,9 +688,9 @@ watch: {
   flex: 1;
 }
 
-  .text-positive {
-    color: #4CAF50;
-  }
+.text-positive {
+  color: #4caf50;
+}
 
 .text-negative {
   color: red;
@@ -693,29 +757,29 @@ watch: {
   margin: 15px 5px; /* Spacing between buttons */
 }
 
-  .btn-custom {
-    width: auto; /* Make buttons wider */
-    background-color: transparent; /* Make buttons transparent */
-    color: white !important; /* Text color */
-    border: 1px solid white !important; /* White border */
-    margin: 5px 0; /* Margin for spacing */
-  }
+.btn-custom {
+  width: auto; /* Make buttons wider */
+  background-color: transparent; /* Make buttons transparent */
+  color: white !important; /* Text color */
+  border: 1px solid white !important; /* White border */
+  margin: 5px 0; /* Margin for spacing */
+}
 
-  .btn-custom:hover {
-    background-color: #F0F0F0; /* Grey background on hover */
-    color: #000000 !important; /* Change text color as needed */
-  }
+.btn-custom:hover {
+  background-color: #f0f0f0; /* Grey background on hover */
+  color: #000000 !important; /* Change text color as needed */
+}
 
-  .form-control {
+.form-control {
   border-radius: 0.25rem;
   border: 1px solid #ced4da;
-  }
+}
 
-  /* Adjust the button container to make the buttons align nicely */
-  .d-flex.justify-content-center {
-    flex-direction: column; /* Stack buttons vertically */
-    align-items: stretch; /* Stretch buttons to fill the width */
-  }
+/* Adjust the button container to make the buttons align nicely */
+.d-flex.justify-content-center {
+  flex-direction: column; /* Stack buttons vertically */
+  align-items: stretch; /* Stretch buttons to fill the width */
+}
 
 /* Adjust the button container to make the buttons align nicely */
 .d-flex.justify-content-center {
