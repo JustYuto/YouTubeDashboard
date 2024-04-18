@@ -20,6 +20,13 @@
       <nav class="nav">
         <div>
           <div class="nav_list">
+            <a href="#" class="nav_link active">
+              <img
+                src="@/assets/webtvasia logo.png"
+                alt="Logo"
+                class="logo-small"
+              />
+            </a>
             <a href="/backOfficePage" class="nav_link active">
               <i class="bx bx-grid-alt nav_icon"></i>
               <span class="nav_name">Home</span>
@@ -57,6 +64,15 @@
                 :class="{ active: activeTab === 'Search' }"
                 @click.prevent="setActiveTab('Search')"
                 >Search</a
+              >
+            </li>
+            <li class="nav-item">
+              <a
+                class="nav-link"
+                href="#"
+                :class="{ active: activeTab === 'Channel Analytics' }"
+                @click.prevent="setActiveTab('Channel Analytics')"
+                >Channel Analytics</a
               >
             </li>
           </ul>
@@ -118,18 +134,19 @@
         Download Report
       </button>
     </div>
-    <br /><br /><br /><br />
-    <br /><br /><br /><br />
   </div>
+  <div class="container" v-if="activeTab === 'Channel Analytics'"></div>
 </template>
   
 <script>
 import Search from "./search.vue";
+import channelAnalytics from "./channelAnalytics.vue";
 import axios from "axios";
 
 export default {
   components: {
     Search,
+    channelAnalytics,
   },
   data() {
     return {
@@ -137,7 +154,7 @@ export default {
       cancellationRequests: [],
       channels: [
         {
-          name: "Playground Asia Family",
+          name: "Web TV Asia",
           channelId: "UCETlyq6M0vMRF9IOGOUEsyA",
           startDate: "1/1/2024",
           subscribers: "383,000", // Dummy data
@@ -228,6 +245,8 @@ export default {
           return null;
         case "Search":
           return "Search";
+        case "Channel Analytics":
+          return "channelAnalytics";
         default:
           return null;
       }

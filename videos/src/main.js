@@ -10,6 +10,7 @@ import backOfficePage from "./components/backOfficePage.vue";
 import homePage from "./components/homePage.vue";
 import search from "./components/search.vue";
 import AnalyticsInfo from "./components/analytics_info.vue";
+import channelAnalytics from "./components/channelAnalytics.vue";
 import { Chart } from 'chart.js';
 import vue3GoogleLogin from 'vue3-google-login'
 import store from './store/index';
@@ -31,6 +32,7 @@ const routes = [
   { path: "/homePage", name: "homePage", component: homePage },
   { path: "/search", name: "search", component: search },
   { path: "/analytics_info", name: "analytics-info", component: AnalyticsInfo },
+  { path: "/channelAnalytics", name: "channelAnalytics", component: channelAnalytics },
 ];
 
 const router = createRouter({
