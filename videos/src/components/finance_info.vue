@@ -213,14 +213,9 @@
         <div v-for="(item, index) in filteredHistory" :key="index" class="history-item">
           <div class="history-content">
             <span>{{ item.name }}</span>
-            <span>{{ item.date }}</span>
-            <span
-              :class="{
-                'text-positive': item.amount > 0,
-                'text-negative': item.amount < 0,
-              }"
-            >
-              {{ item.amount > 0 ? "+" : "" }}${{ item.amount }}
+            <span>{{ formatDate(item.date) }}</span>
+            <span :class="{'text-positive': item.amount > 0, 'text-negative': item.amount < 0}">
+              {{ item.amount > 0 ? '+' : '' }}${{ item.amount.toFixed(2) }}
             </span>
           </div>
         </div>
@@ -233,6 +228,7 @@
 import { mapState } from 'vuex';
 import { Chart, LineController, LineElement, PointElement, LinearScale, CategoryScale, Tooltip } from 'chart.js';
 Chart.register(LineController, LineElement, PointElement, LinearScale, CategoryScale, Tooltip);
+import axios from "axios";
 //import 'vue-datepicker-ui/lib/vuedatepickerui.css';
 //import VueDatepickerUi from 'vue-datepicker-ui';
 //import { createPopper } from '@popperjs/core';
@@ -289,16 +285,7 @@ export default {
       ],
       totalEarnings: 2000,
       percentageIncrease: 15,
-      history: [
-        { name: 'Earnings YouTube Channel', date: '2022-01-01', amount: 200 },
-        { name: 'Payment Regular', date: '2022-01-02', amount: -300 },
-        { name: 'Earnings YouTube Recruiter', date: '2022-01-03', amount: 500 },
-        { name: 'Earnings YouTube Channel', date: '2022-01-03', amount: 700 },
-        { name: 'Payment Regular', date: '2022-01-04', amount: -100 },
-        { name: 'Earnings YouTube Channel', date: '2022-01-04', amount: 900 },
-        { name: 'Payment Regular', date: '2022-01-06', amount: -150 }
-        // Add other history items here
-      ],
+      history: [],
       colors: [
         "rgba(255, 99, 132, 1)",
         "rgba(54, 162, 235, 1)",
@@ -323,7 +310,8 @@ export default {
     };
   },
   created() {
-    this.selectAllChannels();
+    this.selectAllChannels(),
+    this.fetchhistory();
   }, 
   computed: {
     ...mapState(['analyticsData']),
@@ -503,11 +491,21 @@ export default {
           }
         }
       }
-    });
-    
+    }); 
+  },
+  fetchhistory() {
+      axios.get('http://localhost:3000/api/history', { withCredentials: true })
+        .then(response => {
+          this.history = response.data;
+        })
+        .catch(error => {
+          console.error('Error fetching history:', error);
+        });
+    },
+  formatDate(dateStr) {
+    return dateStr.split('T')[0];
   },
 },
-// For the watcher example, if you're not using newVal or oldVal, just omit them
 watch: {
   selectedChannels: {
     handler() {

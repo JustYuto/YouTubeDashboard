@@ -313,6 +313,20 @@ app.patch('/cancellation-requests/status/:id', (req, res) => {
   });
 });
 
+app.get('/api/history', (req, res) => {
+  const managerId = req.session.managerId; // Assuming managerId is stored in session
+  const query = 'SELECT * FROM financial_history ORDER BY date DESC';
+
+  connection.query(query, [managerId], (error, results) => {
+      if (error) {
+          console.error('Error fetching history:', error);
+          res.status(500).send('Server error');
+      } else {
+          res.json(results);
+      }
+  });
+});
+
 app.listen(port, () => {
     console.log(`Server running on port ${port}`);
 });
