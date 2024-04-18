@@ -15,24 +15,7 @@
       crossorigin="anonymous"
     />
   </head>
-  <header role="banner" id="fh5co-header">
-    <div class="l-navbar" id="nav-bar">
-      <nav class="nav">
-        <div>
-          <div class="nav_list">
-            <a href="/backOfficePage" class="nav_link active">
-              <i class="bx bx-grid-alt nav_icon"></i>
-              <span class="nav_name">Home</span>
-            </a>
-            <a href="/user_login" class="nav_link">
-              <i class="bx bx-bar-chart-alt-2 nav_icon"></i>
-              <span class="nav_name">Log out</span>
-            </a>
-          </div>
-        </div>
-      </nav>
-    </div>
-  </header>
+
   <div class="gradient"></div>
   <div class="container">
     <nav class="navbar navbar-expand-lg bg-body-tertiary">
