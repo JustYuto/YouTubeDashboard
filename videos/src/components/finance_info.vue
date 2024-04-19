@@ -283,8 +283,8 @@ export default {
         },
         // Add other channels here
       ],
-      totalEarnings: 2000,
-      percentageIncrease: 15,
+      totalEarnings: 1941,
+      percentageIncrease: -15,
       history: [],
       colors: [
         "rgba(255, 99, 132, 1)",
