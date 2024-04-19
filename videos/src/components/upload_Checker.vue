@@ -135,5 +135,22 @@ export default {
 </script>
 
 <style>
+.button-container .btn-custom {
+  flex: 1; /* Each button will take up equal space */
+  margin: 15px 5px; /* Spacing between buttons */
+}
+
+.btn-custom {
+  width: auto; /* Make buttons wider */
+  background-color: transparent; /* Make buttons transparent */
+  color: white !important; /* Text color */
+  border: 1px solid white !important; /* White border */
+  margin: 5px 0; /* Margin for spacing */
+}
+
+.btn-custom:hover {
+  background-color: #f0f0f0; /* Grey background on hover */
+  color: #000000 !important; /* Change text color as needed */
+}
 </style>
 <style src="../../css/style.css"></style>
