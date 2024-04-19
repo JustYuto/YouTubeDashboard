@@ -27,7 +27,7 @@
       rel="stylesheet"
     />
   </head>
-  <div class="container-fluid">
+  <div class="container">
     <div class="row">
       <div class="row analytics-header">
         <div class="col-md-6">
@@ -592,9 +592,9 @@ export default {
 </script>
   
   <style>
-#main-container {
+.container {
   padding-top: 50px; /* Adjust this value based on the height of your navbar */
-  padding-left: 250px; /* Adjust this value based on the width of your sidebar */
+  padding-left: 50px !important; /* Adjust this value based on the width of your sidebar */
 }
 
 /* Example media query for smaller screens */
